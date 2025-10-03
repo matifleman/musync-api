@@ -13,4 +13,4 @@ namespace Musync.Identity.DbContext
             base.OnModelCreating(builder);
         }
     }
- };
+ }

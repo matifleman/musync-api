@@ -4,9 +4,9 @@ namespace Musync.Identity.Models
 {
     public sealed class ApplicationUser : IdentityUser<int>
     {
-        public required string FirstName;
-        public required string LastName;
-        public DateOnly BornDate;
-        public required string ProfilePicture;
+        public required string FirstName { get; set; }
+        public required string LastName { get; set; }
+        public DateOnly BornDate { get; set; }
+        public string? ProfilePicture { get; set; }
     }
 }

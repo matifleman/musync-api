@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Musync.Identity.DbContext;
 
@@ -10,9 +11,11 @@ using Musync.Identity.DbContext;
 namespace Musync.Identity.Migrations
 {
     [DbContext(typeof(MusyncIdentityDbContext))]
-    partial class MusyncIdentityDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251003014555_Initial_Migration")]
+    partial class Initial_Migration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.9");
