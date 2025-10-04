@@ -17,6 +17,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\Musync.Application\Musync.Application.csproj" />
 	  <ProjectReference Include="..\Musync.Domain\Musync.Domain.csproj" />
 	</ItemGroup>
 

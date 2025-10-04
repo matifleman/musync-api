@@ -4,6 +4,7 @@
     <Project Path="Musync.Api/Musync.Api.csproj" />
   </Folder>
   <Folder Name="/src/Core/">
+    <Project Path="Musync.Application/Musync.Application.csproj" Id="a74a2018-b45f-40e4-9690-10b6d03de7f6" />
     <Project Path="Musync.Domain/Musync.Domain.csproj" />
   </Folder>
   <Folder Name="/src/Infrastructure/">
