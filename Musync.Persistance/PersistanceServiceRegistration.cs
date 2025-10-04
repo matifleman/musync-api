@@ -1,7 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Musync.Persistance.DatabaseContext;
+using Musync.Domain;
 
 namespace Musync.Persistance
 {
@@ -12,6 +14,9 @@ namespace Musync.Persistance
             services.AddDbContext<MusyncDbContext>(
                 options => options.UseSqlite(configuration.GetConnectionString("MusyncDatabaseConnectionString"))
             );
+
+            services.AddIdentity<ApplicationUser, IdentityRole<int>>()
+                .AddEntityFrameworkStores<MusyncDbContext>();
 
             return services;
         }

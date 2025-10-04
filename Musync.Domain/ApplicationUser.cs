@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace Musync.Identity.Models
+namespace Musync.Domain
 {
     public sealed class ApplicationUser : IdentityUser<int>
     {

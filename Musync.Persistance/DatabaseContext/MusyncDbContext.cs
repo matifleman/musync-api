@@ -1,9 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Musync.Domain;
 
 namespace Musync.Persistance.DatabaseContext
 {
-    public sealed class MusyncDbContext : DbContext
+    public sealed class MusyncDbContext : IdentityDbContext<ApplicationUser, IdentityRole<int>, int>
     {
         public MusyncDbContext(DbContextOptions<MusyncDbContext> options): base(options)
         { }
@@ -12,6 +14,7 @@ namespace Musync.Persistance.DatabaseContext
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(MusyncDbContext).Assembly);
             base.OnModelCreating(modelBuilder);
         }
     }

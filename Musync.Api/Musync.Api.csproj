@@ -18,7 +18,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Musync.Identity\Musync.Identity.csproj" />
     <ProjectReference Include="..\Musync.Persistance\Musync.Persistance.csproj" />
   </ItemGroup>
 

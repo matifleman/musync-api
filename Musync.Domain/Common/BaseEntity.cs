@@ -1,13 +1,11 @@
-﻿using Musync.Identity.Models;
-
-namespace Musync.Domain.Common
+﻿namespace Musync.Domain.Common
 {
     public abstract class BaseEntity
     {
-        public int ID { get; set; }
+        public int Id { get; set; }
         public DateTimeOffset? CreatedAt { get; set; }
-        public int? CreatedByID { get; set; }
+        public int? CreatedById { get; set; }
         public DateTimeOffset? UpdatedAt { get; set; }
-        public int? UpdatedByID { get; set; }
+        public int? UpdatedById { get; set; }
     }
 }
