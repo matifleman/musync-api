@@ -3,7 +3,8 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Musync.Identity.DbContext;
+using Musync.Identity.DatabaseContext;
+
 
 #nullable disable
 

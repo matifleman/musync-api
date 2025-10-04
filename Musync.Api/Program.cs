@@ -1,8 +1,10 @@
 using Musync.Identity;
+using Musync.Persistance;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddIdentityServices(builder.Configuration);
+builder.Services.AddPersistanceServices(builder.Configuration);
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();

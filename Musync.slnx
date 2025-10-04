@@ -8,5 +8,6 @@
   </Folder>
   <Folder Name="/src/Infrastructure/">
     <Project Path="Musync.Identity/Musync.Identity.csproj" />
+    <Project Path="Musync.Persistance/Musync.Persistance.csproj" Id="6cccb84e-96f8-4ad6-ac0e-fa1d45d94e8c" />
   </Folder>
 </Solution>

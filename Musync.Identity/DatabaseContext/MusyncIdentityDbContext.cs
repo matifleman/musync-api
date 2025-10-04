@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Musync.Identity.Models;
 using Microsoft.AspNetCore.Identity;
 
-namespace Musync.Identity.DbContext
+namespace Musync.Identity.DatabaseContext
 {
     public sealed class MusyncIdentityDbContext(DbContextOptions<MusyncIdentityDbContext> options)
         : IdentityDbContext<ApplicationUser, IdentityRole<int>, int>(options)

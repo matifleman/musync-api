@@ -1,9 +1,9 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Musync.Identity.DbContext;
 using Musync.Identity.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using Musync.Identity.DatabaseContext;
 
 namespace Musync.Identity
 {
