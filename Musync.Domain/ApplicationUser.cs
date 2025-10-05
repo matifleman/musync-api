@@ -7,6 +7,8 @@ namespace Musync.Domain
         public required string FirstName { get; set; }
         public required string LastName { get; set; }
         public DateOnly BornDate { get; set; }
-        public string? ProfilePicture { get; set; }
+        public required string ProfilePicture { get; set; }
+        public override required string Email { get; set; }
+        public override required string UserName { get; set; } 
     }
 }

@@ -11,7 +11,7 @@ using Musync.Persistance.DatabaseContext;
 namespace Musync.Persistance.Migrations
 {
     [DbContext(typeof(MusyncDbContext))]
-    [Migration("20251004190924_Initial_Migration")]
+    [Migration("20251004232121_Initial_Migration")]
     partial class Initial_Migration
     {
         /// <inheritdoc />
@@ -163,6 +163,7 @@ namespace Musync.Persistance.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Email")
+                        .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("TEXT");
 
@@ -201,6 +202,7 @@ namespace Musync.Persistance.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("ProfilePicture")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("SecurityStamp")
@@ -210,6 +212,7 @@ namespace Musync.Persistance.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("UserName")
+                        .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("TEXT");
 
