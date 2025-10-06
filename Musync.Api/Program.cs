@@ -16,6 +16,7 @@ builder.Services.AddSwaggerGen();
 
 // Exception handlers
 builder.Services.AddScoped<IExceptionHandler, BadRequestExceptionHandler>();
+builder.Services.AddScoped<IExceptionHandler, NotFoundExceptionHandler>();
 builder.Services.AddScoped<IExceptionHandler, DefaultExceptionHandler>();
 
 var app = builder.Build();

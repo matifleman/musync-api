@@ -1,30 +1,34 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
 using Musync.Application.Contracts.Identity;
 using Musync.Application.DTOs;
 using Musync.Application.Exceptions;
 using Musync.Application.Models.Identity;
 using Musync.Domain;
 using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Security.Cryptography;
-using System.Text;
 
 namespace Musync.Application.Services
 {
     public class AuthService : IAuthService
     {
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly JwtSettings _jwtSettings;
-        public AuthService(UserManager<ApplicationUser> userManager, IOptions<JwtSettings> jwtSettings)
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly ITokenProvider _tokenProvider;
+
+        public AuthService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ITokenProvider tokenProvider)
         {
             _userManager = userManager;
-            _jwtSettings = jwtSettings.Value;
+            _signInManager = signInManager;
+            _tokenProvider = tokenProvider;
         }
-        public Task<AuthResponse> Login(LoginRequest request)
+        public async Task<AuthResponse> Login(LoginRequest request)
         {
-            throw new NotImplementedException();
+            ApplicationUser? user = await _userManager.FindByEmailAsync(request.Email);
+            if(user is null) throw new NotFoundException($"User with email '{request.Email}' not found");
+
+            SignInResult result = await _signInManager.CheckPasswordSignInAsync(user, request.Password, false);
+            if (!result.Succeeded) throw new BadRequestException($"Credentials for {user.Email} are not valid");
+
+            return GenerateAuthResponse(user);
         }
 
         public async Task<AuthResponse> Register(RegistrationRequest request)
@@ -36,41 +40,6 @@ namespace Musync.Application.Services
             if (result.Succeeded) return GenerateAuthResponse(user);
 
             throw new BadRequestException("Error creating user", result.Errors);
-        }
-
-        private JwtSecurityToken GenerateAccessToken(ApplicationUser user)
-        {
-            
-            Claim[] claims = new[]
-            {
-                new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                new Claim("userId", user.Id.ToString())
-            };
-
-            SymmetricSecurityKey symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Key));
-            SigningCredentials signingCredentials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256);
-
-            JwtSecurityToken jwtSecurityToken = new JwtSecurityToken(
-                issuer: _jwtSettings.Issuer,
-                audience: _jwtSettings.Audience,
-                claims: claims,
-                expires: DateTime.Now.AddMinutes(_jwtSettings.DurationInMinutes),
-                signingCredentials: signingCredentials
-            );
-            return jwtSecurityToken;
-        }
-
-        private string GenerateRefreshToken()
-        {
-            byte[] randomNumber = new byte[32];
-            using (RandomNumberGenerator rng = RandomNumberGenerator.Create())
-            {
-                rng.GetBytes(randomNumber);
-            }
-
-            return Convert.ToBase64String(randomNumber);
         }
 
         private int CalculateAge(DateOnly bornDate)
@@ -85,8 +54,8 @@ namespace Musync.Application.Services
 
         private AuthResponse GenerateAuthResponse(ApplicationUser user)
         {
-            JwtSecurityToken accessToken = GenerateAccessToken(user);
-            string refreshToken = GenerateRefreshToken();
+            JwtSecurityToken accessToken = _tokenProvider.GenerateAccessToken(user);
+            string refreshToken = _tokenProvider.GenerateRefreshToken();
             UserDTO userDTO = new UserDTO
             {
                 FirstName = user.FirstName,

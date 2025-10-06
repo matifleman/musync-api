@@ -1,8 +1,13 @@
-﻿namespace Musync.Application.Models.Identity
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Musync.Application.Models.Identity
 {
-    public record LoginRequest(
-        string UserName,
-        string email,
-        string Password
-    );
+    public record LoginRequest 
+    {
+        [Required]
+        [EmailAddress]
+        public required string Email { get; set; }
+        [Required]
+        public required string Password { get; set; }
+    };
 }

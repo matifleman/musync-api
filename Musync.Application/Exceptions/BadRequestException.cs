@@ -5,7 +5,10 @@ namespace Musync.Application.Exceptions
 {
     public class BadRequestException : Exception
     {
-        public BadRequestException(string message) : base(message) { }
+        public BadRequestException(string message) : base(message)
+        {
+            ValidationErrors = new Dictionary<string, string[]>();
+        }
 
         public BadRequestException(string message, ValidationResult validationResult) : base(message)
         {
@@ -22,6 +25,6 @@ namespace Musync.Application.Exceptions
             ValidationErrors = errorsDict;
         }
 
-        public IDictionary<string, string[]>? ValidationErrors { get; set; }
+        public IDictionary<string, string[]> ValidationErrors { get; set; }
     }
 }

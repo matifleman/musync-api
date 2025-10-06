@@ -6,6 +6,7 @@ using Musync.Application.Services;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Text;
+using Musync.Application.Providers;
 
 namespace Musync.Application
 {
@@ -22,6 +23,7 @@ namespace Musync.Application
             services.Configure<JwtSettings>(configuration.GetSection("JwtSettings"));
 
             services.AddTransient<IAuthService, AuthService>();
+            services.AddTransient<ITokenProvider, TokenProvider>();
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

@@ -35,7 +35,7 @@ namespace HR.LeaveManagement.Api.Middleware
             HttpStatusCode statusCode;
             CustomProblemDetails problem;
 
-            IExceptionHandler? handler = handlers
+            IExceptionHandler handler = handlers
                 .Where(h => h.CanHandle(ex))
                 .OrderBy(h => h.Priority)
                 .First();
@@ -43,10 +43,9 @@ namespace HR.LeaveManagement.Api.Middleware
             problem = handler.Handle(ex, out statusCode);
 
             httpContext.Response.StatusCode = (int)statusCode;
-            var logMessage = JsonConvert.SerializeObject(problem);
+            string logMessage = JsonConvert.SerializeObject(problem);
             _logger.LogError(logMessage);
             await httpContext.Response.WriteAsJsonAsync(problem);
-
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Musync.Api.Models;
 using Musync.Application.Contracts.Identity;
 using Musync.Application.Models.Identity;
 
@@ -15,9 +16,20 @@ namespace Musync.Api.Controllers
         }
 
         [HttpPost("register")]
+        [ProducesResponseType(typeof(AuthResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(CustomProblemDetails), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Register([FromBody] RegistrationRequest request)
         {
             AuthResponse authResponse = await _authService.Register(request);
+            return Ok(authResponse);
+        }
+
+        [HttpPost("login")]
+        [ProducesResponseType(typeof(AuthResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(CustomProblemDetails), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> Login([FromBody] LoginRequest request)
+        {
+            AuthResponse authResponse = await _authService.Login(request);
             return Ok(authResponse);
         }
     }
