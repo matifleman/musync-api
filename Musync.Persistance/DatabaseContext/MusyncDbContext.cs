@@ -11,6 +11,8 @@ namespace Musync.Persistance.DatabaseContext
         { }
 
         public DbSet<Post> Posts { get; set; }
+        public DbSet<Band> Bands { get; set; }
+        public DbSet<Genre> Genres { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
