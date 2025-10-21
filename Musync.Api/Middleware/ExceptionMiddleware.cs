@@ -3,7 +3,7 @@ using Musync.Api.Models;
 using Newtonsoft.Json;
 using System.Net;
 
-namespace HR.LeaveManagement.Api.Middleware
+namespace Musync.Api.Middleware
 {
     public class ExceptionMiddleware
     {
