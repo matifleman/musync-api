@@ -5,8 +5,8 @@ using Musync.Application.Models.Identity;
 
 namespace Musync.Api.Controllers
 {
-    [Route("api/[controller]")]
-    public class AuthController : ControllerBase
+    [Route("api/auth")]
+    public sealed class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
 
@@ -18,7 +18,7 @@ namespace Musync.Api.Controllers
         [HttpPost("register")]
         [ProducesResponseType(typeof(AuthResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(CustomProblemDetails), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Register([FromBody] RegistrationRequest request)
+        public async Task<ActionResult<AuthResponse>> Register([FromBody] RegistrationRequest request)
         {
             AuthResponse authResponse = await _authService.Register(request);
             return Ok(authResponse);
@@ -27,7 +27,7 @@ namespace Musync.Api.Controllers
         [HttpPost("login")]
         [ProducesResponseType(typeof(AuthResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(CustomProblemDetails), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Login([FromBody] LoginRequest request)
+        public async Task<ActionResult<AuthResponse>> Login([FromBody] LoginRequest request)
         {
             AuthResponse authResponse = await _authService.Login(request);
             return Ok(authResponse);

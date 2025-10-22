@@ -4,15 +4,16 @@
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
 USER $APP_UID
 WORKDIR /app
-EXPOSE 8080
-EXPOSE 8081
-
+EXPOSE 5000
 
 # This stage is used to build the service project
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["Musync.Api/Musync.Api.csproj", "Musync.Api/"]
+COPY ["Musync.Application/Musync.Application.csproj", "Musync.Application/"]
+COPY ["Musync.Domain/Musync.Domain.csproj", "Musync.Domain/"]
+COPY ["Musync.Persistance/Musync.Persistance.csproj", "Musync.Persistance/"]
 RUN dotnet restore "./Musync.Api/Musync.Api.csproj"
 COPY . .
 WORKDIR "/src/Musync.Api"
@@ -28,4 +29,5 @@ FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENV ASPNETCORE_ENVIRONMENT=Development
+ENV ASPNETCORE_URLS=http://0.0.0.0:5000
 ENTRYPOINT ["dotnet", "Musync.Api.dll"]

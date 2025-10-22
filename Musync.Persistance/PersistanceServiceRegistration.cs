@@ -4,6 +4,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Musync.Persistance.DatabaseContext;
 using Musync.Domain;
+using Musync.Application.Contracts.Persistance;
+using Musync.Persistance.Repositories;
 
 namespace Musync.Persistance
 {
@@ -17,6 +19,10 @@ namespace Musync.Persistance
 
             services.AddIdentity<ApplicationUser, IdentityRole<int>>()
                 .AddEntityFrameworkStores<MusyncDbContext>();
+
+            services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            services.AddScoped<IInstrumentRepository, InstrumentRepository>();
+            services.AddScoped<IGenreRepository, GenreRepository>();
 
             return services;
         }

@@ -10,4 +10,7 @@
   <Folder Name="/src/Infrastructure/">
     <Project Path="Musync.Persistance/Musync.Persistance.csproj" Id="6cccb84e-96f8-4ad6-ac0e-fa1d45d94e8c" />
   </Folder>
+  <Project Path="docker-compose.dcproj">
+    <Build />
+  </Project>
 </Solution>

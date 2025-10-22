@@ -5,7 +5,7 @@ using Musync.Application.Contracts.Persistance;
 
 namespace Musync.Persistance.Repositories
 {
-    public sealed class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
+    public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
     {
         private readonly MusyncDbContext _dbContext;
 
