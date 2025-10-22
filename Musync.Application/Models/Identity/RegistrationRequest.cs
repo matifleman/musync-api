@@ -17,9 +17,5 @@ namespace Musync.Application.Models.Identity
         public required string Email { get; set; }
         [Required]
         public required string Password { get; set; }
-        [Required]
-        public required List<int> FavoriteInstrumentsIds { get; set; }
-        [Required]
-        public required List<int> FavoriteGenresIds { get; set; }
     }
 }

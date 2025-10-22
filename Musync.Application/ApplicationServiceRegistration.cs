@@ -1,14 +1,15 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Musync.Application.Contracts.Identity;
-using Musync.Application.Models.Identity;
-using Musync.Application.Services;
-using Microsoft.IdentityModel.Tokens;
+﻿using Mapster;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using System.Text;
-using Musync.Application.Providers;
-using Mapster;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
+using Musync.Application.Contracts.Identity;
 using Musync.Application.Contracts.Services;
+using Musync.Application.Models.Identity;
+using Musync.Application.Providers;
+using Musync.Application.Services;
+using System.Text;
 
 namespace Musync.Application
 {
@@ -22,6 +23,11 @@ namespace Musync.Application
             JwtSettings jwtSettings = new JwtSettings();
             configuration.GetSection("JwtSettings").Bind(jwtSettings);
             services.Configure<JwtSettings>(configuration.GetSection("JwtSettings"));
+
+            services.Configure<IdentityOptions>(options =>
+            {
+                options.User.RequireUniqueEmail = true;
+            });
 
             services.AddTransient<IAuthService, AuthService>();
             services.AddTransient<ITokenProvider, TokenProvider>();
@@ -42,7 +48,7 @@ namespace Musync.Application
                 };
             });
 
-            services.AddScoped(typeof(IGenericService<,>), typeof(GenericService<,>));
+            services.AddScoped(typeof(IBaseService<,>), typeof(BaseService<,>));
             services.AddScoped<IInstrumentService, InstrumentService>();
 
             return services;

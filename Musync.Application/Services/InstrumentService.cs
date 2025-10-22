@@ -6,7 +6,7 @@ using Musync.Domain;
 
 namespace Musync.Application.Services
 {
-    public sealed class InstrumentService : GenericService<InstrumentDTO, Instrument>, IInstrumentService
+    public sealed class InstrumentService : BaseService<InstrumentDTO, Instrument>, IInstrumentService
     {
         public InstrumentService(IMapper mapper, IGenericRepository<Instrument> genericRepository) : base(mapper, genericRepository)
         {

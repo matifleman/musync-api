@@ -3,7 +3,7 @@ using Musync.Domain;
 
 namespace Musync.Application.Contracts.Services
 {
-    public interface IInstrumentService : IGenericService<InstrumentDTO, Instrument>
+    public interface IInstrumentService : IBaseService<InstrumentDTO, Instrument>
     {
     }
 }
