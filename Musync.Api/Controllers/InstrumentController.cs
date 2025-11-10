@@ -4,7 +4,7 @@ using Musync.Application.Features.Instrument.Queries;
 
 namespace Musync.Api.Controllers
 {
-    [Route("api/instrument")]
+    [Route("api/instruments")]
     public sealed class InstrumentController : ControllerBase
     {
         private readonly IMediator _mediator;

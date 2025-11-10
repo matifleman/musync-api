@@ -23,6 +23,7 @@ namespace Musync.Persistance
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddScoped<IInstrumentRepository, InstrumentRepository>();
             services.AddScoped<IGenreRepository, GenreRepository>();
+            services.AddScoped<IPostRepository, PostRepository>();
 
             return services;
         }
