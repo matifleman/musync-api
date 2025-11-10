@@ -13,5 +13,8 @@ namespace Musync.Domain
         public override required string UserName { get; set; }
         public ICollection<Instrument>? FavoriteInstruments { get; set; } = [];
         public ICollection<Genre>? FavoriteGenres { get; set; } = [];
+        public ICollection<ApplicationUser>? Followers { get; set; } = [];
+        public ICollection<ApplicationUser>? Followed { get; set; } = [];
+        public bool IsFollowed { get; set; }
     }
 }

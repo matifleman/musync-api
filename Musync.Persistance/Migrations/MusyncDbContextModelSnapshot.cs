@@ -17,6 +17,21 @@ namespace Musync.Persistance.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.9");
 
+            modelBuilder.Entity("ApplicationUserApplicationUser", b =>
+                {
+                    b.Property<int>("FollowedId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("FollowersId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("FollowedId", "FollowersId");
+
+                    b.HasIndex("FollowersId");
+
+                    b.ToTable("ApplicationUserApplicationUser");
+                });
+
             modelBuilder.Entity("ApplicationUserGenre", b =>
                 {
                     b.Property<int>("FavoriteGenresId")
@@ -218,6 +233,9 @@ namespace Musync.Persistance.Migrations
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsFollowed")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("LastName")
                         .IsRequired()
@@ -484,6 +502,21 @@ namespace Musync.Persistance.Migrations
                     b.HasIndex("AuthorId");
 
                     b.ToTable("Posts");
+                });
+
+            modelBuilder.Entity("ApplicationUserApplicationUser", b =>
+                {
+                    b.HasOne("Musync.Domain.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("FollowedId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Musync.Domain.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("FollowersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("ApplicationUserGenre", b =>
