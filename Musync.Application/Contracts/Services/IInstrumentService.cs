@@ -1,4 +1,4 @@
-﻿using Musync.Application.DTOs;
+﻿using Musync.Application.Features.Instrument.Queries;
 using Musync.Domain;
 
 namespace Musync.Application.Contracts.Services

@@ -1,11 +1,9 @@
-﻿using Mapster;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Musync.Application.Contracts.Identity;
-using Musync.Application.Contracts.Services;
 using Musync.Application.Models.Identity;
 using Musync.Application.Providers;
 using Musync.Application.Services;
@@ -17,8 +15,8 @@ namespace Musync.Application
     {
         public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddMapster();
-            MapsterConfig.Configure();
+            services.AddAutoMapper(cfg => { }, typeof(ApplicationServiceRegistration).Assembly);
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(ApplicationServiceRegistration).Assembly));
 
             JwtSettings jwtSettings = new JwtSettings();
             configuration.GetSection("JwtSettings").Bind(jwtSettings);
@@ -27,6 +25,11 @@ namespace Musync.Application
             services.Configure<IdentityOptions>(options =>
             {
                 options.User.RequireUniqueEmail = true;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequiredLength = 6;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireDigit = false;
             });
 
             services.AddTransient<IAuthService, AuthService>();
@@ -47,9 +50,6 @@ namespace Musync.Application
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Key))
                 };
             });
-
-            services.AddScoped(typeof(IBaseService<,>), typeof(BaseService<,>));
-            services.AddScoped<IInstrumentService, InstrumentService>();
 
             return services;
         }
