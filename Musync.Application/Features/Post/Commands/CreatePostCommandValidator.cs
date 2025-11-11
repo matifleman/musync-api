@@ -27,7 +27,6 @@ namespace Musync.Application.Features.Post.Commands
         {
             ApplicationUser? user = await _userManager.FindByIdAsync(authorId.ToString());
             return user is not null;
-
         }
     }
 }

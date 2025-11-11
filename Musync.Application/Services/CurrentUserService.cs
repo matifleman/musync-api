@@ -1,0 +1,33 @@
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Musync.Application.Contracts.Services;
+using Musync.Domain;
+
+namespace Musync.Application.Services
+{
+    public sealed class CurrentUserService : ICurrentUserService
+    {
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly UserManager<ApplicationUser> _userManager;
+
+        public CurrentUserService(IHttpContextAccessor httpContextAccessor, UserManager<ApplicationUser> userManager)
+        {
+            _httpContextAccessor = httpContextAccessor;
+            _userManager = userManager;
+        }
+
+        public async Task<ApplicationUser?> GetCurrentUserAsync()
+        {
+            ApplicationUser? user = await _userManager.Users
+                .Include(u => u.Followed)
+                .Include(u => u.Followers)
+                .FirstOrDefaultAsync(u => u.Id == int.Parse(_userManager.GetUserId(_httpContextAccessor.HttpContext!.User)!));
+            
+            if (user is null)
+                throw new Exception("Current user not found");
+
+            return user;
+        }
+    }
+}

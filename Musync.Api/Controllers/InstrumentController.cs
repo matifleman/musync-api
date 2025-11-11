@@ -18,7 +18,7 @@ namespace Musync.Api.Controllers
         [ProducesResponseType(typeof(List<InstrumentDTO>), StatusCodes.Status200OK)]
         public async Task<ActionResult<List<InstrumentDTO>>> GetInstruments()
         {
-            IReadOnlyList<InstrumentDTO> instruments = await _mediator.Send(new GetInstrumentsCommand());
+            IReadOnlyList<InstrumentDTO> instruments = await _mediator.Send(new GetInstrumentsQuery());
             return Ok(instruments);
         }
     }

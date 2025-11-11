@@ -19,8 +19,4 @@
     <ProjectReference Include="..\Musync.Domain\Musync.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Features\Profile\Commands\" />
-  </ItemGroup>
-
 </Project>

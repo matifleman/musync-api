@@ -51,7 +51,11 @@ namespace Musync.Application.Features.Post.Commands
             string imagePath = string.Empty;
 
             string fileName = $"{Guid.NewGuid()}_{image.FileName}";
-            string savePath = Path.Combine(_env.WebRootPath, "images", fileName);
+            string imagesDirectory = Path.Combine(_env.WebRootPath, "images");
+            string savePath = Path.Combine(imagesDirectory, fileName);
+
+            if (!Directory.Exists(imagesDirectory))
+                Directory.CreateDirectory(imagesDirectory);
 
             using var stream = new FileStream(savePath, FileMode.Create);
             await image.CopyToAsync(stream, cancellationToken);

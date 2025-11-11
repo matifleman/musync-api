@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Musync.Application.Contracts.Identity;
+using Musync.Application.Contracts.Services;
 using Musync.Application.Models.Identity;
 using Musync.Application.Providers;
 using Musync.Application.Services;
@@ -17,6 +18,8 @@ namespace Musync.Application
         {
             services.AddAutoMapper(cfg => { }, typeof(ApplicationServiceRegistration).Assembly);
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(ApplicationServiceRegistration).Assembly));
+
+            services.AddScoped<ICurrentUserService, CurrentUserService>();
 
             JwtSettings jwtSettings = new JwtSettings();
             configuration.GetSection("JwtSettings").Bind(jwtSettings);

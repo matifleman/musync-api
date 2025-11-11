@@ -15,6 +15,11 @@ namespace Musync.Domain
         public ICollection<Genre>? FavoriteGenres { get; set; } = [];
         public ICollection<ApplicationUser>? Followers { get; set; } = [];
         public ICollection<ApplicationUser>? Followed { get; set; } = [];
-        public bool IsFollowed { get; set; }
+
+        public bool IsFollowing(int otherUserId)
+        {
+            if (Followed is null || Followed.Count == 0) return false;
+            return Followed.Any(u => u.Id == otherUserId);
+        }
     }
 }

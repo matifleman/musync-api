@@ -21,7 +21,7 @@ namespace Musync.Api.Controllers
         public async Task<ActionResult<PostDTO>> CreatePost([FromForm] CreatePostCommand command)
         {
             PostDTO createdPost = await _mediator.Send(command);
-            return CreatedAtAction("/post/:id", new { id = createdPost.Id }, createdPost);
+            return Created($"/api/posts/{createdPost.Id}", createdPost);
         }
     }
 }

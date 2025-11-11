@@ -2,7 +2,7 @@
 
 namespace Musync.Application.Features.Instrument.Queries
 {
-    public sealed class GetInstrumentsCommand : IRequest<List<InstrumentDTO>>
+    public sealed class GetInstrumentsQuery : IRequest<List<InstrumentDTO>>
     {
     }
 }

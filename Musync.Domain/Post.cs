@@ -6,7 +6,7 @@ namespace Musync.Domain
     {
         public int AuthorId { get; set; }
         public ApplicationUser? Author { get; set; }
-        public string? Caption;
-        public required string Image;
+        public string? Caption { get; set; }
+        public required string Image { get; set; }
     }
 }
