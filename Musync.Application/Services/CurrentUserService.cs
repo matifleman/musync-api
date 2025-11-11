@@ -19,10 +19,12 @@ namespace Musync.Application.Services
 
         public async Task<ApplicationUser?> GetCurrentUserAsync()
         {
+            int userId = int.Parse(_userManager.GetUserId(_httpContextAccessor.HttpContext!.User)!);
+
             ApplicationUser? user = await _userManager.Users
                 .Include(u => u.Followed)
                 .Include(u => u.Followers)
-                .FirstOrDefaultAsync(u => u.Id == int.Parse(_userManager.GetUserId(_httpContextAccessor.HttpContext!.User)!));
+                .FirstOrDefaultAsync(u => u.Id == userId);
             
             if (user is null)
                 throw new Exception("Current user not found");

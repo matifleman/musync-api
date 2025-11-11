@@ -37,6 +37,7 @@ namespace Musync.Application.Providers
                 audience: _jwtSettings.Audience,
                 claims: claims,
                 expires: DateTime.Now.AddMinutes(_jwtSettings.DurationInMinutes),
+                //expires: DateTime.Now.AddSeconds(15),
                 signingCredentials: signingCredentials
             );
             return jwtSecurityToken;

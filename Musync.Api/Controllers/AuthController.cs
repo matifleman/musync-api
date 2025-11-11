@@ -32,5 +32,15 @@ namespace Musync.Api.Controllers
             AuthResponse authResponse = await _authService.Login(request);
             return Ok(authResponse);
         }
+
+        [HttpPost("refresh")]
+        [ProducesResponseType(typeof(AuthResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(CustomProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(CustomProblemDetails), StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<AuthResponse>> Refresh([FromBody] RefreshRequest request)
+        {
+            AuthResponse authResponse = await _authService.Refresh(request);
+            return Ok(authResponse);
+        }
     }
 }

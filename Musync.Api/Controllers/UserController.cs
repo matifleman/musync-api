@@ -22,6 +22,7 @@ namespace Musync.API.Controllers
             _currentUserService = currentUserService;
         }
 
+        [Authorize]
         [HttpGet("{userId}")]
         [ProducesResponseType(typeof(UserDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -41,6 +42,7 @@ namespace Musync.API.Controllers
             return Ok(user);
         }
 
+        [Authorize]
         [HttpGet]
         [ProducesResponseType(typeof(List<UserDTO>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAllUsers()

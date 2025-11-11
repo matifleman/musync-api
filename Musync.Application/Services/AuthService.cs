@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Musync.Application.Contracts.Identity;
 using Musync.Application.Contracts.Persistance;
 using Musync.Application.DTOs;
@@ -14,18 +15,19 @@ namespace Musync.Application.Services
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ITokenProvider _tokenProvider;
+        private readonly IMapper _mapper;
 
         public AuthService(
             UserManager<ApplicationUser> userManager, 
             SignInManager<ApplicationUser> signInManager, 
             ITokenProvider tokenProvider,
-            IInstrumentRepository instrumentRepository,
-            IGenreRepository genreRepository
+            IMapper mapper
             )
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _tokenProvider = tokenProvider;
+            _mapper = mapper;
         }
         public async Task<AuthResponse> Login(LoginRequest request)
         {
@@ -35,7 +37,7 @@ namespace Musync.Application.Services
             SignInResult result = await _signInManager.CheckPasswordSignInAsync(user, request.Password, false);
             if (!result.Succeeded) throw new BadRequestException($"Credentials for {user.Email} are not valid");
 
-            return GenerateAuthResponse(user);
+            return await GenerateAuthResponse(user);
         }
 
         public async Task<AuthResponse> Register(RegistrationRequest request)
@@ -44,34 +46,31 @@ namespace Musync.Application.Services
 
             IdentityResult result = await _userManager.CreateAsync(user, request.Password);
 
-            if (result.Succeeded) return GenerateAuthResponse(user);
+            if (result.Succeeded) return await GenerateAuthResponse(user);
 
             throw new BadRequestException("Error creating user", result.Errors);
         }
 
-        private int CalculateAge(DateOnly bornDate)
+        public async Task<AuthResponse> Refresh(RefreshRequest request)
         {
-            DateOnly today = DateOnly.FromDateTime(DateTime.Today);
-            int age = today.Year - bornDate.Year;
+            ApplicationUser? user = await _userManager.FindByIdAsync(request.UserId.ToString());
+            if (user is null) throw new NotFoundException($"User with id '{request.UserId}' not found");
 
-            if (bornDate > today.AddYears(-age)) age--;
+            string? stored = await _userManager.GetAuthenticationTokenAsync(user, "Musync", "RefreshToken");
+            if (string.IsNullOrEmpty(stored) || stored != request.RefreshToken)
+                throw new BadRequestException("Invalid refresh token");
 
-            return age;
+            return await GenerateAuthResponse(user);
         }
 
-        private AuthResponse GenerateAuthResponse(ApplicationUser user)
+        private async Task<AuthResponse> GenerateAuthResponse(ApplicationUser user)
         {
             JwtSecurityToken accessToken = _tokenProvider.GenerateAccessToken(user);
             string refreshToken = _tokenProvider.GenerateRefreshToken();
-            UserDTO userDTO = new UserDTO
-            {
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                UserName = user.UserName,
-                Email = user.Email,
-                ProfilePicture = user.ProfilePicture,
-                Age = CalculateAge(user.BornDate),
-            };
+            UserDTO userDTO = _mapper.Map<UserDTO>(user);
+
+            await _userManager.SetAuthenticationTokenAsync(user, "Musync", "RefreshToken", refreshToken);
+
             return new AuthResponse(
                 userDTO, new JwtSecurityTokenHandler().WriteToken(accessToken), refreshToken
             );
