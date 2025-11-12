@@ -4,6 +4,7 @@ namespace Musync.Application.Contracts.Services
 {
     public interface ICurrentUserService
     {
-        Task<ApplicationUser?> GetCurrentUserAsync();
+        Task<ApplicationUser> GetCurrentUserAsync();
+        int CurrentUserId { get; }
     }
 }

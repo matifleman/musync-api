@@ -14,9 +14,9 @@
     </None>
     <None Include="docker-compose.yml" />
     <None Include=".dockerignore" />
-    <None Include="Musync.Application.Contracts\Identity\IAuthService.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Musync.Application.Contracts\Identity\" />
     <Folder Include="Musync.Application.Services\" />
   </ItemGroup>
 </Project>

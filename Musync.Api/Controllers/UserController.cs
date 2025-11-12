@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Musync.Application.Contracts.Services;
 using Musync.Application.DTOs;
+using Musync.Application.Features.User.Commands.UpdateAvatar;
 using Musync.Application.Features.User.Queries.GetUser;
 using Musync.Application.Features.User.Queries.GetUsers;
 using Musync.Application.Features.User.Queries.SearchUsers;
@@ -46,7 +47,7 @@ namespace Musync.API.Controllers
         [Authorize]
         [HttpGet]
         [ProducesResponseType(typeof(List<UserDTO>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetAllUsers()
+        public async Task<ActionResult> GetAllUsers()
         {
             List<UserDTO> users = await _mediator.Send(new GetUsersQuery());
             return Ok(users);
@@ -73,6 +74,16 @@ namespace Musync.API.Controllers
 
             var result = await _mediator.Send(new SearchUsersQuery(q, pageNumber, pageSize));
             return Ok(result);
+        }
+
+        [Authorize]
+        [HttpPut("me/avatar")]
+        [Consumes("multipart/form-data")]
+        [ProducesResponseType(typeof(UserDTO), StatusCodes.Status200OK)]
+        public async Task<ActionResult<UserDTO>> UpdateAvatar([FromForm] UpdateAvatarCommand command)
+        {
+            UserDTO updatedUser = await _mediator.Send(command);
+            return Ok(updatedUser);
         }
     }
 }

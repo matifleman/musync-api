@@ -22,5 +22,16 @@ namespace Musync.Persistance.Repositories
 
             return userPosts;
         }
+
+        public override async Task<IReadOnlyList<Post>> GetAllAsync()
+        {
+            List<Post> posts = await _dbContext.Posts
+                .Include(post => post.Author)
+                .ToListAsync();
+
+
+
+            return posts.OrderByDescending(post => post.CreatedAt).ToList();
+        }
     }
 }

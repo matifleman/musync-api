@@ -8,5 +8,6 @@ namespace Musync.Domain
         public ApplicationUser? Author { get; set; }
         public string? Caption { get; set; }
         public required string Image { get; set; }
+        public ICollection<PostLike> Likes { get; set; } = new List<PostLike>();
     }
 }

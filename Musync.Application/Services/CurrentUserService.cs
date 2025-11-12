@@ -17,9 +17,11 @@ namespace Musync.Application.Services
             _userManager = userManager;
         }
 
-        public async Task<ApplicationUser?> GetCurrentUserAsync()
+        public int CurrentUserId => int.Parse(_userManager.GetUserId(_httpContextAccessor.HttpContext?.User));
+
+        public async Task<ApplicationUser> GetCurrentUserAsync()
         {
-            int userId = int.Parse(_userManager.GetUserId(_httpContextAccessor.HttpContext!.User)!);
+            int userId = int.Parse(_userManager.GetUserId(_httpContextAccessor.HttpContext?.User));
 
             ApplicationUser? user = await _userManager.Users
                 .Include(u => u.Followed)
