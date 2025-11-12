@@ -5,6 +5,7 @@ using Musync.Application.Contracts.Services;
 using Musync.Application.DTOs;
 using Musync.Application.Features.User.Queries.GetUser;
 using Musync.Application.Features.User.Queries.GetUsers;
+using Musync.Application.Features.User.Queries.SearchUsers;
 using Musync.Domain;
 
 namespace Musync.API.Controllers
@@ -49,6 +50,29 @@ namespace Musync.API.Controllers
         {
             List<UserDTO> users = await _mediator.Send(new GetUsersQuery());
             return Ok(users);
+        }
+
+        /// <summary>
+        /// Buscar usuarios por username
+        /// </summary>
+        /// <param name="q">Término de búsqueda (username)</param>
+        /// <param name="pageNumber">Número de página (default: 1)</param>
+        /// <param name="pageSize">Tamaño de página (default: 20, max: 50)</param>
+        /// <returns>Lista de usuarios que coinciden con la búsqueda</returns>
+        [HttpGet("search")]
+        [ProducesResponseType(typeof(List<UserSearchDTO>), StatusCodes.Status200OK)]
+        public async Task<ActionResult<List<UserSearchDTO>>> SearchUsers(
+            [FromQuery] string q,
+            [FromQuery] int pageNumber = 1,
+            [FromQuery] int pageSize = 20)
+        {
+            // Validar y limitar el tamaño de página
+            if (pageSize > 50) pageSize = 50;
+            if (pageSize < 1) pageSize = 20;
+            if (pageNumber < 1) pageNumber = 1;
+
+            var result = await _mediator.Send(new SearchUsersQuery(q, pageNumber, pageSize));
+            return Ok(result);
         }
     }
 }
