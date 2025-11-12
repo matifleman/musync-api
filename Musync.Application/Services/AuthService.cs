@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Musync.Application.Contracts.Identity;
 using Musync.Application.DTOs;
 using Musync.Application.Exceptions;
@@ -30,7 +31,10 @@ namespace Musync.Application.Services
         }
         public async Task<AuthResponse> Login(LoginRequest request)
         {
-            ApplicationUser? user = await _userManager.FindByEmailAsync(request.Email);
+            ApplicationUser? user = await _userManager.Users
+                .Include(u => u.Followers)
+                .Include(u => u.Followed)
+                .FirstOrDefaultAsync(u => u.Email.ToLower() == request.Email.ToLower());
             if(user is null) throw new NotFoundException($"User with email '{request.Email}' not found");
 
             SignInResult result = await _signInManager.CheckPasswordSignInAsync(user, request.Password, false);
