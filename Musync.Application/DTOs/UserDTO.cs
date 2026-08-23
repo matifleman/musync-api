@@ -1,4 +1,6 @@
-﻿namespace Musync.Application.DTOs
+﻿using Musync.Application.Features.Instrument.Queries;
+
+namespace Musync.Application.DTOs
 {
     public record UserDTO
     {
@@ -12,5 +14,6 @@
         public int FollowersCount { get; init; }
         public int FollowedCount { get; init; }
         public bool IsFollowed { get; set; }
+        public List<InstrumentDTO> FavoriteInstruments { get; init; } = [];
     };
 }

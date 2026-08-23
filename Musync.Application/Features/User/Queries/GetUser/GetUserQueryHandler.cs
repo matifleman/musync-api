@@ -23,7 +23,9 @@ namespace Musync.Application.Features.User.Queries.GetUser
         }
         public async Task<UserDTO> Handle(GetUserQuery request, CancellationToken cancellationToken)
         {
-            ApplicationUser? targetUser = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == request.userId);
+            ApplicationUser? targetUser = await _userManager.Users
+                .Include(u => u.FavoriteInstruments)
+                .FirstOrDefaultAsync(u => u.Id == request.userId);
 
             if(targetUser is null)
                 throw new NotFoundException($"User with id '{request.userId}' not found");

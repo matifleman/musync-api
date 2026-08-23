@@ -15,7 +15,8 @@ namespace Musync.Application.MappingProfiles
                     (DateTime.Now.DayOfYear < src.BornDate.DayOfYear ? 1 : 0)
                 ))
                 .ForMember(dest => dest.FollowersCount, opt => opt.MapFrom(src => src.Followers != null ? src.Followers.Count : 0))
-                .ForMember(dest => dest.FollowedCount, opt => opt.MapFrom(src => src.Followed != null ? src.Followed.Count : 0));
+                .ForMember(dest => dest.FollowedCount, opt => opt.MapFrom(src => src.Followed != null ? src.Followed.Count : 0))
+                .ForMember(dest => dest.FavoriteInstruments, opt => opt.MapFrom(src => src.FavoriteInstruments ?? new List<Instrument>()));
         }
     }
 }

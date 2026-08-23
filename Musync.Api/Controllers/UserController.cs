@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Musync.Application.Contracts.Services;
 using Musync.Application.DTOs;
 using Musync.Application.Features.User.Commands.UpdateAvatar;
+using Musync.Application.Features.User.Commands.UpdateInstruments;
 using Musync.Application.Features.User.Queries.GetUser;
 using Musync.Application.Features.User.Queries.GetUsers;
 using Musync.Application.Features.User.Queries.SearchUsers;
@@ -81,6 +82,16 @@ namespace Musync.API.Controllers
         [Consumes("multipart/form-data")]
         [ProducesResponseType(typeof(UserDTO), StatusCodes.Status200OK)]
         public async Task<ActionResult<UserDTO>> UpdateAvatar([FromForm] UpdateAvatarCommand command)
+        {
+            UserDTO updatedUser = await _mediator.Send(command);
+            return Ok(updatedUser);
+        }
+
+        [Authorize]
+        [HttpPut("me/instruments")]
+        [ProducesResponseType(typeof(UserDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<UserDTO>> UpdateInstruments([FromBody] UpdateInstrumentsCommand command)
         {
             UserDTO updatedUser = await _mediator.Send(command);
             return Ok(updatedUser);
