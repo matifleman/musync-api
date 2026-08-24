@@ -5,6 +5,7 @@ namespace Musync.Domain
     public sealed class Instrument : BaseEntity
     {
         public required string Name { get; set; }
+        public required string Image { get; set; }
         public ICollection<ApplicationUser> Users { get; set; } = [];
     }
 }

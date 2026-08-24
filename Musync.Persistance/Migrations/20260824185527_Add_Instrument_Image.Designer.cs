@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Musync.Persistance.DatabaseContext;
 
@@ -10,9 +11,11 @@ using Musync.Persistance.DatabaseContext;
 namespace Musync.Persistance.Migrations
 {
     [DbContext(typeof(MusyncDbContext))]
-    partial class MusyncDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260824185527_Add_Instrument_Image")]
+    partial class Add_Instrument_Image
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.9");
