@@ -34,6 +34,7 @@ namespace Musync.Application.Services
             ApplicationUser? user = await _userManager.Users
                 .Include(u => u.Followers)
                 .Include(u => u.Followed)
+                .Include(u => u.FavoriteInstruments)
                 .FirstOrDefaultAsync(u => u.Email.ToLower() == request.Email.ToLower());
             if(user is null) throw new NotFoundException($"User with email '{request.Email}' not found");
 
@@ -56,7 +57,11 @@ namespace Musync.Application.Services
 
         public async Task<AuthResponse> Refresh(RefreshRequest request)
         {
-            ApplicationUser? user = await _userManager.FindByIdAsync(request.UserId.ToString());
+            ApplicationUser? user = await _userManager.Users
+                .Include(u => u.Followers)
+                .Include(u => u.Followed)
+                .Include(u => u.FavoriteInstruments)
+                .FirstOrDefaultAsync(u => u.Id == request.UserId);
             if (user is null) throw new NotFoundException($"User with id '{request.UserId}' not found");
 
             string? stored = await _userManager.GetAuthenticationTokenAsync(user, "Musync", "RefreshToken");
