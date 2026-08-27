@@ -266,6 +266,17 @@ ServiceFabricBackup/
 *.ldf
 *.ndf
 
+# Local SQLite database (regenerate via EF Core migrations, see CLAUDE.md)
+Musync.Api/Musync.db
+Musync.Api/Musync.db-shm
+Musync.Api/Musync.db-wal
+Musync.Api/Musync.db-journal
+
+# User-uploaded content (local dev only, never committed)
+Musync.Api/wwwroot/images/*
+Musync.Api/wwwroot/profile-pictures/*
+!Musync.Api/wwwroot/profile-pictures/default.jpg
+
 # Business Intelligence projects
 *.rdl.data
 *.bim.layout

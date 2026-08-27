@@ -13,6 +13,10 @@ Musync API is a .NET 9 REST API (backend for the Musync mobile app) providing us
 dotnet restore
 dotnet build
 
+# First-time setup on a fresh clone/machine: Musync.db is gitignored (local dev data only,
+# not committed — see .gitignore), so create it from migrations before the first run:
+dotnet ef database update --project Musync.Persistance --startup-project Musync.Api
+
 # Run the API locally (listens on 0.0.0.0:5000 in Development, Swagger UI at the root path "/")
 dotnet run --project Musync.Api
 
@@ -20,7 +24,7 @@ dotnet run --project Musync.Api
 dotnet ef migrations add <Name> --project Musync.Persistance --startup-project Musync.Api
 dotnet ef database update --project Musync.Persistance --startup-project Musync.Api
 
-# Run with Docker Compose (from repo root, mounts local Musync.Api/Musync.db into the container)
+# Run with Docker Compose (from repo root, mounts local Musync.Api/Musync.db and wwwroot uploads into the container)
 docker-compose up -d
 docker-compose down
 ```

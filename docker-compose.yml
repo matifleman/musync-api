@@ -9,6 +9,8 @@ services:
       - "5000:5000"
     volumes:
       - ./Musync.Api/Musync.db:/app/Musync.db
+      - ./Musync.Api/wwwroot/images:/app/wwwroot/images
+      - ./Musync.Api/wwwroot/profile-pictures:/app/wwwroot/profile-pictures
       - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
     build:
