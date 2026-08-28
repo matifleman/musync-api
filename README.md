@@ -5,6 +5,18 @@ Musync is a **.NET 9 RESTful API** that implements user authentication, identity
 ---
 
 
+## 🔑 Secrets
+
+`JwtSettings:Key` is not committed to the repo — `appsettings.json` ships with an empty placeholder.
+
+- **Local dev**: set it via the .NET user-secrets store (never written to a tracked file):
+  ```
+  dotnet user-secrets set "JwtSettings:Key" "<your-key>" --project Musync.Api
+  ```
+- **Other environments** (Docker/production): set it via the environment variable `JwtSettings__Key` (double underscore).
+
+Generate a strong random key with `openssl rand -base64 48`.
+
 ## ⚙️ Environment Setup
 
 The project uses **SQLite** by default, with the file `Musync.db` located in `Musync.Api/`.
