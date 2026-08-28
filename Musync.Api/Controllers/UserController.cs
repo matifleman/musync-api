@@ -37,20 +37,26 @@ namespace Musync.API.Controllers
 
         [Authorize]
         [HttpGet("me")]
-        [ProducesResponseType(typeof(UserDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(CurrentUserDTO), StatusCodes.Status200OK)]
         public async Task<ActionResult<UserDTO>> GetMyUser()
         {
             ApplicationUser currentUser = (await _currentUserService.GetCurrentUserAsync())!;
-            UserDTO user = await _mediator.Send(new GetUserQuery(currentUser.Id));
+            UserDTO user = await _mediator.Send(new GetUserQuery(currentUser.Id, IncludeEmail: true));
             return Ok(user);
         }
 
         [Authorize]
         [HttpGet]
         [ProducesResponseType(typeof(List<UserDTO>), StatusCodes.Status200OK)]
-        public async Task<ActionResult> GetAllUsers()
+        public async Task<ActionResult> GetAllUsers(
+            [FromQuery] int pageNumber = 1,
+            [FromQuery] int pageSize = 20)
         {
-            List<UserDTO> users = await _mediator.Send(new GetUsersQuery());
+            if (pageSize > 50) pageSize = 50;
+            if (pageSize < 1) pageSize = 20;
+            if (pageNumber < 1) pageNumber = 1;
+
+            List<UserDTO> users = await _mediator.Send(new GetUsersQuery(pageNumber, pageSize));
             return Ok(users);
         }
 
@@ -80,20 +86,20 @@ namespace Musync.API.Controllers
         [Authorize]
         [HttpPut("me/avatar")]
         [Consumes("multipart/form-data")]
-        [ProducesResponseType(typeof(UserDTO), StatusCodes.Status200OK)]
-        public async Task<ActionResult<UserDTO>> UpdateAvatar([FromForm] UpdateAvatarCommand command)
+        [ProducesResponseType(typeof(CurrentUserDTO), StatusCodes.Status200OK)]
+        public async Task<ActionResult<CurrentUserDTO>> UpdateAvatar([FromForm] UpdateAvatarCommand command)
         {
-            UserDTO updatedUser = await _mediator.Send(command);
+            CurrentUserDTO updatedUser = await _mediator.Send(command);
             return Ok(updatedUser);
         }
 
         [Authorize]
         [HttpPut("me/instruments")]
-        [ProducesResponseType(typeof(UserDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(CurrentUserDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<UserDTO>> UpdateInstruments([FromBody] UpdateInstrumentsCommand command)
+        public async Task<ActionResult<CurrentUserDTO>> UpdateInstruments([FromBody] UpdateInstrumentsCommand command)
         {
-            UserDTO updatedUser = await _mediator.Send(command);
+            CurrentUserDTO updatedUser = await _mediator.Send(command);
             return Ok(updatedUser);
         }
     }

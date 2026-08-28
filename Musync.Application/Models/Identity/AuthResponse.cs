@@ -3,7 +3,7 @@
 namespace Musync.Application.Models.Identity
 {
     public record AuthResponse(
-        UserDTO User,
+        CurrentUserDTO User,
         string AccessToken,
         string RefreshToken
     );

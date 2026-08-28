@@ -75,7 +75,7 @@ namespace Musync.Application.Services
         {
             JwtSecurityToken accessToken = _tokenProvider.GenerateAccessToken(user);
             string refreshToken = _tokenProvider.GenerateRefreshToken();
-            UserDTO userDTO = _mapper.Map<UserDTO>(user);
+            CurrentUserDTO userDTO = _mapper.Map<CurrentUserDTO>(user);
 
             await _userManager.SetAuthenticationTokenAsync(user, "Musync", "RefreshToken", refreshToken);
 

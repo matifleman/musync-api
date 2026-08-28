@@ -9,7 +9,7 @@ using Musync.Domain;
 
 namespace Musync.Application.Features.User.Commands.UpdateAvatar
 {
-    public sealed class UpdateAvatarCommandHandler : IRequestHandler<UpdateAvatarCommand, UserDTO>
+    public sealed class UpdateAvatarCommandHandler : IRequestHandler<UpdateAvatarCommand, CurrentUserDTO>
     {
         private readonly IWebHostEnvironment _env;
         private readonly ICurrentUserService _currentUserService;
@@ -27,7 +27,7 @@ namespace Musync.Application.Features.User.Commands.UpdateAvatar
             _mapper = mapper;
             _userManager = userManager;
         }
-        public async Task<UserDTO> Handle(UpdateAvatarCommand request, CancellationToken cancellationToken)
+        public async Task<CurrentUserDTO> Handle(UpdateAvatarCommand request, CancellationToken cancellationToken)
         {
             string avatarPath = await SaveImage(request.newAvatar, cancellationToken);
             ApplicationUser user = await _currentUserService.GetCurrentUserAsync();
@@ -35,7 +35,7 @@ namespace Musync.Application.Features.User.Commands.UpdateAvatar
             user.ProfilePicture = avatarPath;
             await _userManager.UpdateAsync(user);
 
-            return _mapper.Map<UserDTO>(user);
+            return _mapper.Map<CurrentUserDTO>(user);
         }
 
         private async Task<string> SaveImage(IFormFile image, CancellationToken cancellationToken)

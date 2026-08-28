@@ -11,7 +11,7 @@ using Musync.Domain;
 
 namespace Musync.Application.Features.User.Commands.UpdateInstruments
 {
-    public sealed class UpdateInstrumentsCommandHandler : IRequestHandler<UpdateInstrumentsCommand, UserDTO>
+    public sealed class UpdateInstrumentsCommandHandler : IRequestHandler<UpdateInstrumentsCommand, CurrentUserDTO>
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ICurrentUserService _currentUserService;
@@ -30,7 +30,7 @@ namespace Musync.Application.Features.User.Commands.UpdateInstruments
             _mapper = mapper;
         }
 
-        public async Task<UserDTO> Handle(UpdateInstrumentsCommand request, CancellationToken cancellationToken)
+        public async Task<CurrentUserDTO> Handle(UpdateInstrumentsCommand request, CancellationToken cancellationToken)
         {
             UpdateInstrumentsCommandValidator validator = new UpdateInstrumentsCommandValidator(_instrumentRepository);
             ValidationResult validationResult = await validator.ValidateAsync(request, cancellationToken);
@@ -51,7 +51,7 @@ namespace Musync.Application.Features.User.Commands.UpdateInstruments
 
             await _userManager.UpdateAsync(user);
 
-            return _mapper.Map<UserDTO>(user);
+            return _mapper.Map<CurrentUserDTO>(user);
         }
     }
 }

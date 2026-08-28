@@ -32,7 +32,11 @@ namespace Musync.Application.Features.User.Queries.GetUser
 
             ApplicationUser currentUser = (await _currentUserService.GetCurrentUserAsync())!; // won't be null because of authorization middleware
 
-            UserDTO targetUserDto = _mapper.Map<UserDTO>(targetUser);
+            // IncludeEmail is only ever set true by the controller for the caller's own profile (GET /me) -
+            // never bound from client input, so this can't be used to read another user's email.
+            UserDTO targetUserDto = request.IncludeEmail
+                ? _mapper.Map<CurrentUserDTO>(targetUser)
+                : _mapper.Map<UserDTO>(targetUser);
 
             targetUserDto.IsFollowed = currentUser.IsFollowing(targetUser.Id);
 
