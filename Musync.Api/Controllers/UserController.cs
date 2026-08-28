@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Musync.Application.Common;
 using Musync.Application.Contracts.Services;
 using Musync.Application.DTOs;
 using Musync.Application.Features.User.Commands.UpdateAvatar;
@@ -86,6 +87,7 @@ namespace Musync.API.Controllers
         [Authorize]
         [HttpPut("me/avatar")]
         [Consumes("multipart/form-data")]
+        [RequestSizeLimit(ImageUploadValidator.MaxFileSizeBytes + 1024 * 1024)]
         [ProducesResponseType(typeof(CurrentUserDTO), StatusCodes.Status200OK)]
         public async Task<ActionResult<CurrentUserDTO>> UpdateAvatar([FromForm] UpdateAvatarCommand command)
         {

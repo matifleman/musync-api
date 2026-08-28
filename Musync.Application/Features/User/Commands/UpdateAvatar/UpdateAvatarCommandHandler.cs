@@ -1,10 +1,13 @@
 ﻿using AutoMapper;
+using FluentValidation.Results;
 using MediatR;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Musync.Application.Common;
 using Musync.Application.Contracts.Services;
 using Musync.Application.DTOs;
+using Musync.Application.Exceptions;
 using Musync.Domain;
 
 namespace Musync.Application.Features.User.Commands.UpdateAvatar
@@ -29,6 +32,12 @@ namespace Musync.Application.Features.User.Commands.UpdateAvatar
         }
         public async Task<CurrentUserDTO> Handle(UpdateAvatarCommand request, CancellationToken cancellationToken)
         {
+            UpdateAvatarCommandValidator validator = new UpdateAvatarCommandValidator();
+            ValidationResult validationResult = await validator.ValidateAsync(request, cancellationToken);
+
+            if (validationResult.Errors.Any())
+                throw new BadRequestException("Invalid avatar", validationResult);
+
             string avatarPath = await SaveImage(request.newAvatar, cancellationToken);
             ApplicationUser user = await _currentUserService.GetCurrentUserAsync();
 
@@ -42,7 +51,7 @@ namespace Musync.Application.Features.User.Commands.UpdateAvatar
         {
             string imagePath = string.Empty;
 
-            string fileName = $"{Guid.NewGuid()}_{image.FileName}";
+            string fileName = ImageUploadValidator.GenerateSafeFileName(image.FileName);
             string imagesDirectory = Path.Combine(_env.WebRootPath, "profile-pictures");
             string savePath = Path.Combine(imagesDirectory, fileName);
 

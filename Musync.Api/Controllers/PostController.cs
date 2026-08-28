@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Musync.Application.Common;
 using Musync.Application.Features.Like.Commands.DeletePostLike;
 using Musync.Application.Features.Like.Commands.LikePost;
 using Musync.Application.Features.Post;
@@ -24,6 +25,7 @@ namespace Musync.Api.Controllers
         [Authorize]
         [HttpPost]
         [Consumes("multipart/form-data")]
+        [RequestSizeLimit(ImageUploadValidator.MaxFileSizeBytes + 1024 * 1024)]
         [ProducesResponseType(typeof(PostDTO), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<PostDTO>> CreatePost([FromForm] CreatePostCommand command)

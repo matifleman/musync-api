@@ -3,6 +3,7 @@ using FluentValidation.Results;
 using MediatR;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Musync.Application.Common;
 using Musync.Application.Contracts.Persistance;
 using Musync.Application.Contracts.Services;
 using Musync.Application.Exceptions;
@@ -49,7 +50,7 @@ namespace Musync.Application.Features.Post.Commands
         {
             string imagePath = string.Empty;
 
-            string fileName = $"{Guid.NewGuid()}_{image.FileName}";
+            string fileName = ImageUploadValidator.GenerateSafeFileName(image.FileName);
             string imagesDirectory = Path.Combine(_env.WebRootPath, "images");
             string savePath = Path.Combine(imagesDirectory, fileName);
 
