@@ -21,9 +21,11 @@ namespace Musync.Api.Controllers
             _mediator = mediator;
         }
 
+        [Authorize]
         [HttpPost]
         [Consumes("multipart/form-data")]
         [ProducesResponseType(typeof(PostDTO), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<PostDTO>> CreatePost([FromForm] CreatePostCommand command)
         {
             PostDTO createdPost = await _mediator.Send(command);
