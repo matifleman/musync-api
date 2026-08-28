@@ -66,6 +66,8 @@ var app = builder.Build();
 
 app.UseMiddleware<ExceptionMiddleware>();
 
+app.UseHttpsRedirection();
+
 app.UseCors();
 
 if (app.Environment.IsDevelopment())
@@ -82,8 +84,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseStaticFiles();
-
-//app.UseHttpsRedirection();
 
 app.UseAuthorization();
 

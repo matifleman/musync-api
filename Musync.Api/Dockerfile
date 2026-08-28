@@ -28,6 +28,6 @@ RUN dotnet publish "./Musync.Api.csproj" -c $BUILD_CONFIGURATION -o /app/publish
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENV ASPNETCORE_ENVIRONMENT=Development
+ENV ASPNETCORE_ENVIRONMENT=Production
 ENV ASPNETCORE_URLS=http://0.0.0.0:5000
 ENTRYPOINT ["dotnet", "Musync.Api.dll"]

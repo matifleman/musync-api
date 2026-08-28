@@ -17,6 +17,14 @@ Musync is a **.NET 9 RESTful API** that implements user authentication, identity
 
 Generate a strong random key with `openssl rand -base64 48`.
 
+## 🚀 Deployment
+
+The `Dockerfile` defaults to `ASPNETCORE_ENVIRONMENT=Production` (Swagger UI and the dev-only auto-login script are disabled outside Development). `docker-compose.yml` explicitly overrides this back to `Development` — that's the local Docker workflow described below, not a deployment config.
+
+Deploying the built image anywhere else still requires you to:
+- Set `JwtSettings__Key` (see Secrets above) — the app will fail to start authentication without it.
+- Terminate TLS in front of the container (reverse proxy/load balancer) — the app itself has no certificate configured and only listens on plain HTTP.
+
 ## ⚙️ Environment Setup
 
 The project uses **SQLite** by default, with the file `Musync.db` located in `Musync.Api/`.
