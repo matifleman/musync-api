@@ -29,7 +29,7 @@ namespace Musync.Application.Services
                 .FirstOrDefaultAsync(u => u.Id == userId);
             
             if (user is null)
-                throw new Exception("Current user not found");
+                throw new UnauthorizedAccessException("Current user not found");
 
             return user;
         }

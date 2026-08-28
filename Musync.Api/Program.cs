@@ -59,6 +59,7 @@ builder.Services.AddCors(options =>
 // Exception handlers
 builder.Services.AddScoped<IExceptionHandler, BadRequestExceptionHandler>();
 builder.Services.AddScoped<IExceptionHandler, NotFoundExceptionHandler>();
+builder.Services.AddScoped<IExceptionHandler, UnauthorizedAccessExceptionHandler>();
 builder.Services.AddScoped<IExceptionHandler, DefaultExceptionHandler>();
 
 var app = builder.Build();

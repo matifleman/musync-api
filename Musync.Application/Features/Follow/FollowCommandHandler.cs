@@ -24,8 +24,7 @@ namespace Musync.Application.Features.Follow.Commands.FollowUser
         public async Task<FollowResultDTO> Handle(FollowUserCommand request, CancellationToken cancellationToken)
         {
             // Obtener usuario autenticado
-            var currentUser = await _currentUserService.GetCurrentUserAsync()
-                ?? throw new UnauthorizedAccessException("Usuario no autenticado");
+            var currentUser = await _currentUserService.GetCurrentUserAsync();
 
             // No puede seguirse a sí mismo
             if (currentUser.Id == request.UserIdToFollow)

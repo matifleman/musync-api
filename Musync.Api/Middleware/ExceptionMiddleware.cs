@@ -43,8 +43,8 @@ namespace Musync.Api.Middleware
             problem = handler.Handle(ex, out statusCode);
 
             httpContext.Response.StatusCode = (int)statusCode;
-            string logMessage = JsonConvert.SerializeObject(problem);
-            _logger.LogError(logMessage);
+            string responseSummary = JsonConvert.SerializeObject(problem);
+            _logger.LogError(ex, "Request failed. Response: {ResponseSummary}", responseSummary);
             await httpContext.Response.WriteAsJsonAsync(problem);
         }
     }
