@@ -36,10 +36,11 @@ namespace Musync.Application.Services
                 .Include(u => u.Followed)
                 .Include(u => u.FavoriteInstruments)
                 .FirstOrDefaultAsync(u => u.Email.ToLower() == request.Email.ToLower());
-            if(user is null) throw new NotFoundException($"User with email '{request.Email}' not found");
+            if (user is null) throw new BadRequestException("Invalid email or password");
 
-            SignInResult result = await _signInManager.CheckPasswordSignInAsync(user, request.Password, false);
-            if (!result.Succeeded) throw new BadRequestException($"Credentials for {user.Email} are not valid");
+            SignInResult result = await _signInManager.CheckPasswordSignInAsync(user, request.Password, lockoutOnFailure: true);
+            if (result.IsLockedOut) throw new BadRequestException("Account temporarily locked due to multiple failed login attempts. Try again later.");
+            if (!result.Succeeded) throw new BadRequestException("Invalid email or password");
 
             return await GenerateAuthResponse(user);
         }

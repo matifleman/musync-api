@@ -4,6 +4,7 @@ using Musync.Api.Middleware;
 using Musync.Application;
 using Musync.Persistance;
 using Microsoft.OpenApi.Models;
+using System.Threading.RateLimiting;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -56,6 +57,22 @@ builder.Services.AddCors(options =>
     });
 });
 
+// Rate limiting - throttles auth endpoints (register/login/refresh) per client IP to slow
+// brute-force/credential-stuffing attempts. See AuthController for where "auth" is applied.
+builder.Services.AddRateLimiter(options =>
+{
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+
+    options.AddPolicy("auth", httpContext => RateLimitPartition.GetFixedWindowLimiter(
+        partitionKey: httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+        factory: _ => new FixedWindowRateLimiterOptions
+        {
+            PermitLimit = 5,
+            Window = TimeSpan.FromMinutes(1),
+            QueueLimit = 0
+        }));
+});
+
 // Exception handlers
 builder.Services.AddScoped<IExceptionHandler, BadRequestExceptionHandler>();
 builder.Services.AddScoped<IExceptionHandler, NotFoundExceptionHandler>();
@@ -85,7 +102,10 @@ if (app.Environment.IsDevelopment())
 
 app.UseStaticFiles();
 
+app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseRateLimiter();
 
 app.MapControllers();
 

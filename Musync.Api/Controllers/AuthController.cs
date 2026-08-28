@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Musync.Api.Models;
 using Musync.Application.Contracts.Identity;
 using Musync.Application.Models.Identity;
@@ -6,6 +7,7 @@ using Musync.Application.Models.Identity;
 namespace Musync.Api.Controllers
 {
     [Route("api/auth")]
+    [EnableRateLimiting("auth")]
     public sealed class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
