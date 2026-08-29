@@ -7,5 +7,6 @@ namespace Musync.Application.Contracts.Identity
         Task<AuthResponse> Login(LoginRequest request);
         Task<AuthResponse> Register(RegistrationRequest request);
         Task<AuthResponse> Refresh(RefreshRequest request);
+        Task Logout(RefreshRequest request);
     }
 }

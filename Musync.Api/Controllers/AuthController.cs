@@ -44,5 +44,14 @@ namespace Musync.Api.Controllers
             AuthResponse authResponse = await _authService.Refresh(request);
             return Ok(authResponse);
         }
+
+        [HttpPost("logout")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(CustomProblemDetails), StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult> Logout([FromBody] RefreshRequest request)
+        {
+            await _authService.Logout(request);
+            return NoContent();
+        }
     }
 }

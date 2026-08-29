@@ -25,6 +25,7 @@ namespace Musync.Persistance
             services.AddScoped<IGenreRepository, GenreRepository>();
             services.AddScoped<IPostRepository, PostRepository>();
             services.AddScoped<IPostLikeRepository, PostLikeRepository>();
+            services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 
             return services;
         }

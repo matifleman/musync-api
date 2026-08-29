@@ -1,7 +1,9 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Musync.Application.Contracts.Identity;
+using Musync.Application.Contracts.Persistance;
 using Musync.Application.DTOs;
 using Musync.Application.Exceptions;
 using Musync.Application.Models.Identity;
@@ -15,19 +17,25 @@ namespace Musync.Application.Services
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ITokenProvider _tokenProvider;
+        private readonly IRefreshTokenRepository _refreshTokenRepository;
         private readonly IMapper _mapper;
+        private readonly JwtSettings _jwtSettings;
 
         public AuthService(
-            UserManager<ApplicationUser> userManager, 
-            SignInManager<ApplicationUser> signInManager, 
+            UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager,
             ITokenProvider tokenProvider,
-            IMapper mapper
+            IRefreshTokenRepository refreshTokenRepository,
+            IMapper mapper,
+            IOptions<JwtSettings> jwtSettings
             )
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _tokenProvider = tokenProvider;
+            _refreshTokenRepository = refreshTokenRepository;
             _mapper = mapper;
+            _jwtSettings = jwtSettings.Value;
         }
         public async Task<AuthResponse> Login(LoginRequest request)
         {
@@ -65,11 +73,35 @@ namespace Musync.Application.Services
                 .FirstOrDefaultAsync(u => u.Id == request.UserId);
             if (user is null) throw new NotFoundException($"User with id '{request.UserId}' not found");
 
-            string? stored = await _userManager.GetAuthenticationTokenAsync(user, "Musync", "RefreshToken");
-            if (string.IsNullOrEmpty(stored) || stored != request.RefreshToken)
-                throw new BadRequestException("Invalid refresh token");
+            RefreshToken storedToken = await GetValidTokenOrThrow(request);
+
+            storedToken.RevokedAt = DateTimeOffset.UtcNow;
+            await _refreshTokenRepository.UpdateAsync(storedToken);
 
             return await GenerateAuthResponse(user);
+        }
+
+        public async Task Logout(RefreshRequest request)
+        {
+            RefreshToken storedToken = await GetValidTokenOrThrow(request);
+
+            storedToken.RevokedAt = DateTimeOffset.UtcNow;
+            await _refreshTokenRepository.UpdateAsync(storedToken);
+        }
+
+        private async Task<RefreshToken> GetValidTokenOrThrow(RefreshRequest request)
+        {
+            string tokenHash = _tokenProvider.HashRefreshToken(request.RefreshToken);
+            RefreshToken? storedToken = await _refreshTokenRepository.GetByTokenHashAsync(tokenHash);
+
+            bool isValid = storedToken is not null
+                && storedToken.UserId == request.UserId
+                && storedToken.RevokedAt is null
+                && storedToken.ExpiresAt > DateTimeOffset.UtcNow;
+
+            if (!isValid) throw new BadRequestException("Invalid refresh token");
+
+            return storedToken!;
         }
 
         private async Task<AuthResponse> GenerateAuthResponse(ApplicationUser user)
@@ -78,7 +110,12 @@ namespace Musync.Application.Services
             string refreshToken = _tokenProvider.GenerateRefreshToken();
             CurrentUserDTO userDTO = _mapper.Map<CurrentUserDTO>(user);
 
-            await _userManager.SetAuthenticationTokenAsync(user, "Musync", "RefreshToken", refreshToken);
+            await _refreshTokenRepository.CreateAsync(new RefreshToken
+            {
+                UserId = user.Id,
+                TokenHash = _tokenProvider.HashRefreshToken(refreshToken),
+                ExpiresAt = DateTimeOffset.UtcNow.AddDays(_jwtSettings.RefreshTokenDurationInDays)
+            });
 
             return new AuthResponse(
                 userDTO, new JwtSecurityTokenHandler().WriteToken(accessToken), refreshToken
