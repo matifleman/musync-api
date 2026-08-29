@@ -28,8 +28,11 @@ namespace Musync.Application
             services.Configure<IdentityOptions>(options =>
             {
                 options.User.RequireUniqueEmail = true;
+                // Length-only policy per NIST 800-63B guidance: no forced composition rules
+                // (uppercase/digit/symbol requirements push users toward predictable patterns
+                // without much real benefit) - length is the stronger, lower-friction signal.
                 options.Password.RequireNonAlphanumeric = false;
-                options.Password.RequiredLength = 6;
+                options.Password.RequiredLength = 10;
                 options.Password.RequireUppercase = false;
                 options.Password.RequireLowercase = false;
                 options.Password.RequireDigit = false;

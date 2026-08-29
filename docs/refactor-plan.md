@@ -20,7 +20,7 @@ Urgency legend: 🔴 Blocking (real bug or exposure) · 🟡 Nice-to-have (matte
 - [ ] CORS is fully open (`AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()`). Not classic CSRF risk since auth is bearer-token (not cookie) based, but it removes any barrier if a token ever leaks into a browser context, and lets any web page act as a full API client. Worth restricting to your actual app origins once you have a web client, but not urgent for a mobile-only backend today.
 - [x] Login has no brute-force protection (`CheckPasswordSignInAsync(..., lockoutOnFailure: false)`), no rate limiting anywhere, and leaks user-enumeration info (404 for unknown email vs. 400 for wrong password).
 - [ ] Refresh tokens never expire, aren't revocable (no logout/revoke endpoint), and only one is stored per user (logging in on a second device silently kills the first device's session).
-- [ ] Password policy is 6 chars, no complexity — reasonable to defer given this is early-stage, but worth deciding intentionally rather than by default.
+- [x] Password policy is 6 chars, no complexity — reasonable to defer given this is early-stage, but worth deciding intentionally rather than by default.
 - [x] `app.UseAuthentication()` is missing from `Program.cs`. Verified it's not currently broken — ASP.NET Core's authorization middleware implicitly authenticates via the sole default scheme — but it's a fragile, non-standard omission that will bite if a second auth scheme or custom `AllowAnonymous` logic is ever added. Cheap one-line fix, low risk to bundle into Group 1.
 
 ## Group 3 — Data correctness bugs 🔴 (recommend own small branch — active bugs, not future risk)
