@@ -24,8 +24,7 @@ namespace Musync.Application.Features.Follow.Commands.UnfollowUser
         public async Task<FollowResultDTO> Handle(UnfollowUserCommand request, CancellationToken cancellationToken)
         {
             // Obtener el usuario actual
-            var currentUser = await _currentUserService.GetCurrentUserAsync()
-                ?? throw new UnauthorizedAccessException("Usuario no autenticado");
+            var currentUser = await _currentUserService.GetCurrentUserAsync();
 
             if (currentUser.Id == request.UserIdToUnfollow)
                 throw new BadRequestException("No puedes dejar de seguirte a ti mismo");

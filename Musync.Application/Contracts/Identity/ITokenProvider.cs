@@ -8,5 +8,6 @@ namespace Musync.Application.Contracts.Identity
     {
         JwtSecurityToken GenerateAccessToken(ApplicationUser user);
         string GenerateRefreshToken();
+        string HashRefreshToken(string refreshToken);
     }
 }

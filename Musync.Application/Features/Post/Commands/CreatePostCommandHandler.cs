@@ -3,10 +3,10 @@ using FluentValidation.Results;
 using MediatR;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
+using Musync.Application.Common;
 using Musync.Application.Contracts.Persistance;
+using Musync.Application.Contracts.Services;
 using Musync.Application.Exceptions;
-using Musync.Domain;
 
 namespace Musync.Application.Features.Post.Commands
 {
@@ -15,18 +15,18 @@ namespace Musync.Application.Features.Post.Commands
         private readonly IPostRepository _postRepository;
         private readonly IMapper _mapper;
         private readonly IWebHostEnvironment _env;
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly ICurrentUserService _currentUserService;
 
-        public CreatePostCommandHandler(IPostRepository postRepository, IMapper mapper, IWebHostEnvironment env, UserManager<ApplicationUser> userManager)
+        public CreatePostCommandHandler(IPostRepository postRepository, IMapper mapper, IWebHostEnvironment env, ICurrentUserService currentUserService)
         {
             _postRepository = postRepository;
             _mapper = mapper;
             _env = env;
-            _userManager = userManager;
+            _currentUserService = currentUserService;
         }
         public async Task<PostDTO> Handle(CreatePostCommand request, CancellationToken cancellationToken)
         {
-            CreatePostCommandValidator validator = new CreatePostCommandValidator(_userManager);
+            CreatePostCommandValidator validator = new CreatePostCommandValidator();
             ValidationResult validationResult = await validator.ValidateAsync(request);
 
             if (validationResult.Errors.Any())
@@ -36,7 +36,7 @@ namespace Musync.Application.Features.Post.Commands
 
             Domain.Post postToCreate = new Domain.Post
             {
-                AuthorId = request.AuthorId,
+                AuthorId = _currentUserService.CurrentUserId,
                 Caption = request.Caption,
                 Image = imagePath
             };
@@ -50,7 +50,7 @@ namespace Musync.Application.Features.Post.Commands
         {
             string imagePath = string.Empty;
 
-            string fileName = $"{Guid.NewGuid()}_{image.FileName}";
+            string fileName = ImageUploadValidator.GenerateSafeFileName(image.FileName);
             string imagesDirectory = Path.Combine(_env.WebRootPath, "images");
             string savePath = Path.Combine(imagesDirectory, fileName);
 

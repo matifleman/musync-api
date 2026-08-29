@@ -22,7 +22,11 @@ namespace Musync.Application.Features.User.Queries.GetUsers
         }
         public async Task<List<UserDTO>> Handle(GetUsersQuery request, CancellationToken cancellationToken)
         {
-            List<ApplicationUser> users = await _userManager.Users.ToListAsync();
+            List<ApplicationUser> users = await _userManager.Users
+                .OrderBy(u => u.Id)
+                .Skip((request.PageNumber - 1) * request.PageSize)
+                .Take(request.PageSize)
+                .ToListAsync(cancellationToken);
             List<UserDTO> userDTOs = _mapper.Map<List<UserDTO>>(users);
 
             ApplicationUser? currentUser = await _currentUserService.GetCurrentUserAsync();
