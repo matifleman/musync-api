@@ -5,9 +5,11 @@ using Musync.Api.Models;
 using Musync.Application.Common;
 using Musync.Application.DTOs;
 using Musync.Application.Features.Band.Commands.CreateBand;
+using Musync.Application.Features.Band.Commands.FollowBand;
 using Musync.Application.Features.Band.Commands.JoinBand;
 using Musync.Application.Features.Band.Commands.LeaveBand;
 using Musync.Application.Features.Band.Commands.RemoveBandMember;
+using Musync.Application.Features.Band.Commands.UnfollowBand;
 using Musync.Application.Features.Band.Commands.UpdateBandGenres;
 using Musync.Application.Features.Band.Commands.UpdateBandInstruments;
 using Musync.Application.Features.Band.Commands.UpdateBandName;
@@ -64,6 +66,28 @@ namespace Musync.Api.Controllers
         {
             BandDTO band = await _mediator.Send(new GetBandQuery(bandId));
             return Ok(band);
+        }
+
+        [Authorize]
+        [HttpPost("{bandId}/follow")]
+        [ProducesResponseType(typeof(BandFollowResultDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<BandFollowResultDTO>> FollowBand([FromRoute] int bandId)
+        {
+            BandFollowResultDTO result = await _mediator.Send(new FollowBandCommand(bandId));
+            return Ok(result);
+        }
+
+        [Authorize]
+        [HttpDelete("{bandId}/follow")]
+        [ProducesResponseType(typeof(BandFollowResultDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<BandFollowResultDTO>> UnfollowBand([FromRoute] int bandId)
+        {
+            BandFollowResultDTO result = await _mediator.Send(new UnfollowBandCommand(bandId));
+            return Ok(result);
         }
 
         [Authorize]
