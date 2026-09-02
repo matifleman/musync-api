@@ -6,7 +6,7 @@ namespace Musync.Application.Features.Band
 {
     internal static class BandMapper
     {
-        public static BandDTO ToBandDto(Domain.Band band)
+        public static BandDTO ToBandDto(Domain.Band band, int followersCount = 0, bool isFollowedByCurrentUser = false)
         {
             HashSet<int> occupiedInstrumentIds = band.Members.Select(m => m.InstrumentId).ToHashSet();
 
@@ -35,7 +35,9 @@ namespace Musync.Application.Features.Band
                 VacantInstruments = band.RequiredInstruments
                     .Where(i => !occupiedInstrumentIds.Contains(i.Id))
                     .Select(i => new InstrumentDTO(i.Id, i.Name, i.Image))
-                    .ToList()
+                    .ToList(),
+                FollowersCount = followersCount,
+                IsFollowedByCurrentUser = isFollowedByCurrentUser
             };
         }
     }
