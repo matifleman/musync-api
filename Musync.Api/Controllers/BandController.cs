@@ -13,6 +13,7 @@ using Musync.Application.Features.Band.Commands.UpdateBandInstruments;
 using Musync.Application.Features.Band.Commands.UpdateBandName;
 using Musync.Application.Features.Band.Commands.UpdateBandPicture;
 using Musync.Application.Features.Band.Queries.GetBand;
+using Musync.Application.Features.Band.Queries.GetUserBands;
 using Musync.Application.Features.Band.Queries.SearchBands;
 
 namespace Musync.Api.Controllers
@@ -61,6 +62,16 @@ namespace Musync.Api.Controllers
         {
             BandDTO band = await _mediator.Send(new GetBandQuery(bandId));
             return Ok(band);
+        }
+
+        [Authorize]
+        [HttpGet("user/{userId}")]
+        [ProducesResponseType(typeof(List<UserBandDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<List<UserBandDTO>>> GetUserBands([FromRoute] int userId)
+        {
+            List<UserBandDTO> bands = await _mediator.Send(new GetUserBandsQuery(userId));
+            return Ok(bands);
         }
 
         [Authorize]

@@ -37,5 +37,13 @@ namespace Musync.Persistance.Repositories
                 .Include(b => b.Members).ThenInclude(m => m.Instrument)
                 .FirstOrDefaultAsync(b => b.Id == bandId);
         }
+
+        public async Task<List<Band>> GetBandsByUserIdAsync(int userId)
+        {
+            return await _dbContext.Bands
+                .Include(b => b.Members).ThenInclude(m => m.Instrument)
+                .Where(b => b.CreatedById == userId || b.Members.Any(m => m.UserId == userId))
+                .ToListAsync();
+        }
     }
 }
