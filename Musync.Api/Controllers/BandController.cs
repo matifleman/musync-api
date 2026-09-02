@@ -42,7 +42,9 @@ namespace Musync.Api.Controllers
         [HttpGet("search")]
         [ProducesResponseType(typeof(List<BandSearchDTO>), StatusCodes.Status200OK)]
         public async Task<ActionResult<List<BandSearchDTO>>> SearchBands(
-            [FromQuery] string q,
+            [FromQuery] string? q = null,
+            [FromQuery] int? instrumentId = null,
+            [FromQuery] int? genreId = null,
             [FromQuery] int pageNumber = 1,
             [FromQuery] int pageSize = 20)
         {
@@ -50,7 +52,7 @@ namespace Musync.Api.Controllers
             if (pageSize < 1) pageSize = 20;
             if (pageNumber < 1) pageNumber = 1;
 
-            List<BandSearchDTO> result = await _mediator.Send(new SearchBandsQuery(q, pageNumber, pageSize));
+            List<BandSearchDTO> result = await _mediator.Send(new SearchBandsQuery(q, instrumentId, genreId, pageNumber, pageSize));
             return Ok(result);
         }
 

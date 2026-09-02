@@ -15,11 +15,15 @@ namespace Musync.Application.Features.Band.Queries.SearchBands
 
         public async Task<List<BandSearchDTO>> Handle(SearchBandsQuery request, CancellationToken cancellationToken)
         {
-            if (string.IsNullOrWhiteSpace(request.SearchTerm))
+            bool hasNoFilters = string.IsNullOrWhiteSpace(request.SearchTerm)
+                && request.InstrumentId is null
+                && request.GenreId is null;
+
+            if (hasNoFilters)
                 return new List<BandSearchDTO>();
 
-            List<Domain.Band> bands = await _bandRepository.SearchByNameAsync(
-                request.SearchTerm.Trim(), request.PageNumber, request.PageSize);
+            List<Domain.Band> bands = await _bandRepository.SearchAsync(
+                request.SearchTerm, request.InstrumentId, request.GenreId, request.PageNumber, request.PageSize);
 
             return bands
                 .Select(b => new BandSearchDTO { Id = b.Id, Name = b.Name, MemberCount = b.Members.Count })
