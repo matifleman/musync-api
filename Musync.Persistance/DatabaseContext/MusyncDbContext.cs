@@ -25,6 +25,7 @@ namespace Musync.Persistance.DatabaseContext
         public DbSet<PostLike> PostLikes { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
         public DbSet<BandMember> BandMembers { get; set; }
+        public DbSet<BandFollower> BandFollowers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
