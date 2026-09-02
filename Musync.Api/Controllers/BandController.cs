@@ -8,6 +8,7 @@ using Musync.Application.Features.Band.Commands.CreateBand;
 using Musync.Application.Features.Band.Commands.JoinBand;
 using Musync.Application.Features.Band.Commands.LeaveBand;
 using Musync.Application.Features.Band.Commands.UpdateBandGenres;
+using Musync.Application.Features.Band.Commands.UpdateBandInstruments;
 using Musync.Application.Features.Band.Commands.UpdateBandName;
 using Musync.Application.Features.Band.Commands.UpdateBandPicture;
 using Musync.Application.Features.Band.Queries.GetBand;
@@ -115,6 +116,17 @@ namespace Musync.Api.Controllers
         public async Task<ActionResult<BandDTO>> UpdateBandGenres([FromRoute] int bandId, [FromBody] UpdateBandGenresRequest request)
         {
             BandDTO band = await _mediator.Send(new UpdateBandGenresCommand(bandId, request.GenreIds));
+            return Ok(band);
+        }
+
+        [Authorize]
+        [HttpPut("{bandId}/instruments")]
+        [ProducesResponseType(typeof(BandDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<BandDTO>> UpdateBandInstruments([FromRoute] int bandId, [FromBody] UpdateBandInstrumentsRequest request)
+        {
+            BandDTO band = await _mediator.Send(new UpdateBandInstrumentsCommand(bandId, request.InstrumentIds));
             return Ok(band);
         }
     }
