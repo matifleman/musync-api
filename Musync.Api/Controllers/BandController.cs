@@ -7,6 +7,7 @@ using Musync.Application.DTOs;
 using Musync.Application.Features.Band.Commands.CreateBand;
 using Musync.Application.Features.Band.Commands.JoinBand;
 using Musync.Application.Features.Band.Commands.LeaveBand;
+using Musync.Application.Features.Band.Commands.RemoveBandMember;
 using Musync.Application.Features.Band.Commands.UpdateBandGenres;
 using Musync.Application.Features.Band.Commands.UpdateBandInstruments;
 using Musync.Application.Features.Band.Commands.UpdateBandName;
@@ -81,6 +82,17 @@ namespace Musync.Api.Controllers
         public async Task<ActionResult<BandDTO>> LeaveBand([FromRoute] int bandId)
         {
             BandDTO band = await _mediator.Send(new LeaveBandCommand(bandId));
+            return Ok(band);
+        }
+
+        [Authorize]
+        [HttpDelete("{bandId}/members/{userId}")]
+        [ProducesResponseType(typeof(BandDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<BandDTO>> RemoveBandMember([FromRoute] int bandId, [FromRoute] int userId)
+        {
+            BandDTO band = await _mediator.Send(new RemoveBandMemberCommand(bandId, userId));
             return Ok(band);
         }
 
