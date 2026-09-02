@@ -1,4 +1,5 @@
 using Musync.Application.DTOs;
+using Musync.Application.Features.Genre.Queries;
 using Musync.Application.Features.Instrument.Queries;
 
 namespace Musync.Application.Features.Band
@@ -15,6 +16,9 @@ namespace Musync.Application.Features.Band
                 Name = band.Name,
                 CreatedById = band.CreatedById ?? 0,
                 ProfilePicture = band.ProfilePicture,
+                Genres = band.Genres
+                    .Select(g => new GenreDTO(g.Id, g.Name))
+                    .ToList(),
                 RequiredInstruments = band.RequiredInstruments
                     .Select(i => new InstrumentDTO(i.Id, i.Name, i.Image))
                     .ToList(),

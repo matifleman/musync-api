@@ -32,6 +32,7 @@ namespace Musync.Persistance.Repositories
         {
             return await _dbContext.Bands
                 .Include(b => b.RequiredInstruments)
+                .Include(b => b.Genres)
                 .Include(b => b.Members).ThenInclude(m => m.User)
                 .Include(b => b.Members).ThenInclude(m => m.Instrument)
                 .FirstOrDefaultAsync(b => b.Id == bandId);
