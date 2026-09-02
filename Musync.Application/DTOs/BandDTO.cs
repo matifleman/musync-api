@@ -13,5 +13,7 @@ namespace Musync.Application.DTOs
         public List<InstrumentDTO> RequiredInstruments { get; init; } = [];
         public List<BandMemberDTO> Members { get; init; } = [];
         public List<InstrumentDTO> VacantInstruments { get; init; } = [];
+        public int FollowersCount { get; init; }
+        public bool IsFollowedByCurrentUser { get; init; }
     }
 }
