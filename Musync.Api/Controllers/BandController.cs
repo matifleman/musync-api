@@ -2,11 +2,13 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Musync.Api.Models;
+using Musync.Application.Common;
 using Musync.Application.DTOs;
 using Musync.Application.Features.Band.Commands.CreateBand;
 using Musync.Application.Features.Band.Commands.JoinBand;
 using Musync.Application.Features.Band.Commands.LeaveBand;
 using Musync.Application.Features.Band.Commands.UpdateBandName;
+using Musync.Application.Features.Band.Commands.UpdateBandPicture;
 using Musync.Application.Features.Band.Queries.GetBand;
 using Musync.Application.Features.Band.Queries.SearchBands;
 
@@ -88,6 +90,19 @@ namespace Musync.Api.Controllers
         public async Task<ActionResult<BandDTO>> UpdateBandName([FromRoute] int bandId, [FromBody] UpdateBandNameRequest request)
         {
             BandDTO band = await _mediator.Send(new UpdateBandNameCommand(bandId, request.Name));
+            return Ok(band);
+        }
+
+        [Authorize]
+        [HttpPut("{bandId}/picture")]
+        [Consumes("multipart/form-data")]
+        [RequestSizeLimit(ImageUploadValidator.MaxFileSizeBytes + 1024 * 1024)]
+        [ProducesResponseType(typeof(BandDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<BandDTO>> UpdateBandPicture([FromRoute] int bandId, [FromForm] UpdateBandPictureRequest request)
+        {
+            BandDTO band = await _mediator.Send(new UpdateBandPictureCommand(bandId, request.Picture));
             return Ok(band);
         }
     }

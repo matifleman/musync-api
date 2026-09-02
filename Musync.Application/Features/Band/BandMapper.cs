@@ -14,6 +14,7 @@ namespace Musync.Application.Features.Band
                 Id = band.Id,
                 Name = band.Name,
                 CreatedById = band.CreatedById ?? 0,
+                ProfilePicture = band.ProfilePicture,
                 RequiredInstruments = band.RequiredInstruments
                     .Select(i => new InstrumentDTO(i.Id, i.Name, i.Image))
                     .ToList(),
