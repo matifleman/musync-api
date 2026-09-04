@@ -15,6 +15,8 @@ using Musync.Application.Features.Band.Commands.UpdateBandInstruments;
 using Musync.Application.Features.Band.Commands.UpdateBandName;
 using Musync.Application.Features.Band.Commands.UpdateBandPicture;
 using Musync.Application.Features.Band.Queries.GetBand;
+using Musync.Application.Features.Band.Queries.GetBandFollowers;
+using Musync.Application.Features.Band.Queries.GetFollowedBands;
 using Musync.Application.Features.Band.Queries.GetFollowedBandsCount;
 using Musync.Application.Features.Band.Queries.GetUserBands;
 using Musync.Application.Features.Band.Queries.SearchBands;
@@ -109,6 +111,40 @@ namespace Musync.Api.Controllers
         {
             FollowedBandsCountDTO result = await _mediator.Send(new GetFollowedBandsCountQuery(userId));
             return Ok(result);
+        }
+
+        [Authorize]
+        [HttpGet("user/{userId}/followed")]
+        [ProducesResponseType(typeof(List<FollowedBandDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<List<FollowedBandDTO>>> GetFollowedBands(
+            [FromRoute] int userId,
+            [FromQuery] int pageNumber = 1,
+            [FromQuery] int pageSize = 20)
+        {
+            if (pageSize > 50) pageSize = 50;
+            if (pageSize < 1) pageSize = 20;
+            if (pageNumber < 1) pageNumber = 1;
+
+            List<FollowedBandDTO> bands = await _mediator.Send(new GetFollowedBandsQuery(userId, pageNumber, pageSize));
+            return Ok(bands);
+        }
+
+        [Authorize]
+        [HttpGet("{bandId}/followers")]
+        [ProducesResponseType(typeof(List<UserSearchDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<List<UserSearchDTO>>> GetBandFollowers(
+            [FromRoute] int bandId,
+            [FromQuery] int pageNumber = 1,
+            [FromQuery] int pageSize = 20)
+        {
+            if (pageSize > 50) pageSize = 50;
+            if (pageSize < 1) pageSize = 20;
+            if (pageNumber < 1) pageNumber = 1;
+
+            List<UserSearchDTO> followers = await _mediator.Send(new GetBandFollowersQuery(bandId, pageNumber, pageSize));
+            return Ok(followers);
         }
 
         [Authorize]

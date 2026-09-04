@@ -33,5 +33,27 @@ namespace Musync.Persistance.Repositories
         {
             return _dbContext.BandFollowers.FirstOrDefaultAsync(bf => bf.BandId == bandId && bf.UserId == userId);
         }
+
+        public Task<List<BandFollower>> GetFollowedBandsAsync(int userId, int pageNumber, int pageSize)
+        {
+            return _dbContext.BandFollowers
+                .Where(bf => bf.UserId == userId)
+                .Include(bf => bf.Band).ThenInclude(b => b!.Members)
+                .OrderByDescending(bf => bf.Id)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+        }
+
+        public Task<List<int>> GetFollowerUserIdsAsync(int bandId, int pageNumber, int pageSize)
+        {
+            return _dbContext.BandFollowers
+                .Where(bf => bf.BandId == bandId)
+                .OrderByDescending(bf => bf.Id)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .Select(bf => bf.UserId)
+                .ToListAsync();
+        }
     }
 }

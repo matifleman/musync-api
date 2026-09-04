@@ -8,6 +8,8 @@ using Musync.Application.Features.User.Commands.UpdateAvatar;
 using Musync.Application.Features.User.Commands.UpdateInstruments;
 using Musync.Application.Features.User.Commands.UpdateProfile;
 using Musync.Application.Features.User.Queries.GetUser;
+using Musync.Application.Features.User.Queries.GetUserFollowers;
+using Musync.Application.Features.User.Queries.GetUserFollowing;
 using Musync.Application.Features.User.Queries.GetUsers;
 using Musync.Application.Features.User.Queries.SearchUsers;
 using Musync.Domain;
@@ -35,6 +37,40 @@ namespace Musync.API.Controllers
         {
             UserDTO user = await _mediator.Send(new GetUserQuery(userId));
             return Ok(user);
+        }
+
+        [Authorize]
+        [HttpGet("{userId}/followers")]
+        [ProducesResponseType(typeof(List<UserSearchDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<List<UserSearchDTO>>> GetUserFollowers(
+            [FromRoute] int userId,
+            [FromQuery] int pageNumber = 1,
+            [FromQuery] int pageSize = 20)
+        {
+            if (pageSize > 50) pageSize = 50;
+            if (pageSize < 1) pageSize = 20;
+            if (pageNumber < 1) pageNumber = 1;
+
+            List<UserSearchDTO> followers = await _mediator.Send(new GetUserFollowersQuery(userId, pageNumber, pageSize));
+            return Ok(followers);
+        }
+
+        [Authorize]
+        [HttpGet("{userId}/following")]
+        [ProducesResponseType(typeof(List<UserSearchDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<List<UserSearchDTO>>> GetUserFollowing(
+            [FromRoute] int userId,
+            [FromQuery] int pageNumber = 1,
+            [FromQuery] int pageSize = 20)
+        {
+            if (pageSize > 50) pageSize = 50;
+            if (pageSize < 1) pageSize = 20;
+            if (pageNumber < 1) pageNumber = 1;
+
+            List<UserSearchDTO> following = await _mediator.Send(new GetUserFollowingQuery(userId, pageNumber, pageSize));
+            return Ok(following);
         }
 
         [Authorize]
