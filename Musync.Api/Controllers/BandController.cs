@@ -15,6 +15,7 @@ using Musync.Application.Features.Band.Commands.UpdateBandInstruments;
 using Musync.Application.Features.Band.Commands.UpdateBandName;
 using Musync.Application.Features.Band.Commands.UpdateBandPicture;
 using Musync.Application.Features.Band.Queries.GetBand;
+using Musync.Application.Features.Band.Queries.GetFollowedBandsCount;
 using Musync.Application.Features.Band.Queries.GetUserBands;
 using Musync.Application.Features.Band.Queries.SearchBands;
 
@@ -98,6 +99,16 @@ namespace Musync.Api.Controllers
         {
             List<UserBandDTO> bands = await _mediator.Send(new GetUserBandsQuery(userId));
             return Ok(bands);
+        }
+
+        [Authorize]
+        [HttpGet("user/{userId}/followed-count")]
+        [ProducesResponseType(typeof(FollowedBandsCountDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<FollowedBandsCountDTO>> GetFollowedBandsCount([FromRoute] int userId)
+        {
+            FollowedBandsCountDTO result = await _mediator.Send(new GetFollowedBandsCountQuery(userId));
+            return Ok(result);
         }
 
         [Authorize]

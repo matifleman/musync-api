@@ -6,6 +6,7 @@ namespace Musync.Application.Contracts.Persistance
     {
         Task<bool> IsFollowingAsync(int bandId, int userId);
         Task<int> GetFollowersCountAsync(int bandId);
+        Task<int> GetFollowedBandsCountAsync(int userId);
         Task<BandFollower?> GetFollowAsync(int bandId, int userId);
     }
 }

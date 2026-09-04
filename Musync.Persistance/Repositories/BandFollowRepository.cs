@@ -24,6 +24,11 @@ namespace Musync.Persistance.Repositories
             return _dbContext.BandFollowers.CountAsync(bf => bf.BandId == bandId);
         }
 
+        public Task<int> GetFollowedBandsCountAsync(int userId)
+        {
+            return _dbContext.BandFollowers.CountAsync(bf => bf.UserId == userId);
+        }
+
         public Task<BandFollower?> GetFollowAsync(int bandId, int userId)
         {
             return _dbContext.BandFollowers.FirstOrDefaultAsync(bf => bf.BandId == bandId && bf.UserId == userId);
