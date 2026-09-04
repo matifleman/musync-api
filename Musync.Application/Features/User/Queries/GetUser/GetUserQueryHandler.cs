@@ -25,6 +25,7 @@ namespace Musync.Application.Features.User.Queries.GetUser
         {
             ApplicationUser? targetUser = await _userManager.Users
                 .Include(u => u.FavoriteInstruments)
+                .Include(u => u.FavoriteGenres)
                 .FirstOrDefaultAsync(u => u.Id == request.userId);
 
             if(targetUser is null)

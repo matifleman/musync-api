@@ -17,6 +17,7 @@ namespace Musync.Application.MappingProfiles
                 .ForMember(dest => dest.FollowersCount, opt => opt.MapFrom(src => src.Followers != null ? src.Followers.Count : 0))
                 .ForMember(dest => dest.FollowedCount, opt => opt.MapFrom(src => src.Followed != null ? src.Followed.Count : 0))
                 .ForMember(dest => dest.FavoriteInstruments, opt => opt.MapFrom(src => src.FavoriteInstruments ?? new List<Instrument>()))
+                .ForMember(dest => dest.FavoriteGenres, opt => opt.MapFrom(src => src.FavoriteGenres ?? new List<Genre>()))
                 .Include<ApplicationUser, CurrentUserDTO>();
 
             // CurrentUserDTO adds Email on top of UserDTO - only used for self-facing responses

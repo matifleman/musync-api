@@ -5,6 +5,7 @@ using Musync.Application.Common;
 using Musync.Application.Contracts.Services;
 using Musync.Application.DTOs;
 using Musync.Application.Features.User.Commands.UpdateAvatar;
+using Musync.Application.Features.User.Commands.UpdateGenres;
 using Musync.Application.Features.User.Commands.UpdateInstruments;
 using Musync.Application.Features.User.Commands.UpdateProfile;
 using Musync.Application.Features.User.Queries.GetUser;
@@ -137,6 +138,16 @@ namespace Musync.API.Controllers
         [ProducesResponseType(typeof(CurrentUserDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<CurrentUserDTO>> UpdateInstruments([FromBody] UpdateInstrumentsCommand command)
+        {
+            CurrentUserDTO updatedUser = await _mediator.Send(command);
+            return Ok(updatedUser);
+        }
+
+        [Authorize]
+        [HttpPut("me/genres")]
+        [ProducesResponseType(typeof(CurrentUserDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<CurrentUserDTO>> UpdateGenres([FromBody] UpdateGenresCommand command)
         {
             CurrentUserDTO updatedUser = await _mediator.Send(command);
             return Ok(updatedUser);

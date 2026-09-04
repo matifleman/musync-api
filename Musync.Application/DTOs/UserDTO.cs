@@ -1,4 +1,5 @@
-﻿using Musync.Application.Features.Instrument.Queries;
+﻿using Musync.Application.Features.Genre.Queries;
+using Musync.Application.Features.Instrument.Queries;
 
 namespace Musync.Application.DTOs
 {
@@ -14,5 +15,6 @@ namespace Musync.Application.DTOs
         public int FollowedCount { get; init; }
         public bool IsFollowed { get; set; }
         public List<InstrumentDTO> FavoriteInstruments { get; init; } = [];
+        public List<GenreDTO> FavoriteGenres { get; init; } = [];
     };
 }
