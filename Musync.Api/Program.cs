@@ -8,10 +8,6 @@ using System.Threading.RateLimiting;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-if (builder.Environment.IsDevelopment())
-    // adding this to dev env to listen to requests on all network interfaces
-    builder.WebHost.ConfigureKestrel(options => options.ListenAnyIP(5000));
-
 builder.Services.AddPersistanceServices(builder.Configuration);
 builder.Services.AddApplicationServices(builder.Configuration);
 
