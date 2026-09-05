@@ -29,6 +29,7 @@ namespace Musync.Persistance
             services.AddScoped<IBandRepository, BandRepository>();
             services.AddScoped<IBandMemberRepository, BandMemberRepository>();
             services.AddScoped<IBandFollowRepository, BandFollowRepository>();
+            services.AddScoped<IReleaseRepository, ReleaseRepository>();
 
             return services;
         }

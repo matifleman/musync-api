@@ -26,6 +26,8 @@ namespace Musync.Persistance.DatabaseContext
         public DbSet<RefreshToken> RefreshTokens { get; set; }
         public DbSet<BandMember> BandMembers { get; set; }
         public DbSet<BandFollower> BandFollowers { get; set; }
+        public DbSet<Release> Releases { get; set; }
+        public DbSet<Song> Songs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
