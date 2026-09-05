@@ -277,6 +277,7 @@ Musync.Api/wwwroot/images/*
 Musync.Api/wwwroot/profile-pictures/*
 !Musync.Api/wwwroot/profile-pictures/default.jpg
 Musync.Api/wwwroot/band-pictures/*
+Musync.Api/wwwroot/release-covers/*
 
 # Business Intelligence projects
 *.rdl.data

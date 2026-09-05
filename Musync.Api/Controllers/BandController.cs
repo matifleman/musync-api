@@ -20,6 +20,9 @@ using Musync.Application.Features.Band.Queries.GetFollowedBands;
 using Musync.Application.Features.Band.Queries.GetFollowedBandsCount;
 using Musync.Application.Features.Band.Queries.GetUserBands;
 using Musync.Application.Features.Band.Queries.SearchBands;
+using Musync.Application.Features.Band.Releases.Commands.CreateRelease;
+using Musync.Application.Features.Band.Releases.Queries.GetBandReleases;
+using Musync.Application.Features.Band.Releases.Queries.GetReleaseById;
 
 namespace Musync.Api.Controllers
 {
@@ -224,6 +227,46 @@ namespace Musync.Api.Controllers
         {
             BandDTO band = await _mediator.Send(new UpdateBandInstrumentsCommand(bandId, request.InstrumentIds));
             return Ok(band);
+        }
+
+        [Authorize]
+        [HttpPost("{bandId}/releases")]
+        [Consumes("multipart/form-data")]
+        [RequestSizeLimit(ImageUploadValidator.MaxFileSizeBytes + 1024 * 1024)]
+        [ProducesResponseType(typeof(ReleaseDetailDTO), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<ReleaseDetailDTO>> CreateRelease([FromRoute] int bandId, [FromForm] CreateReleaseRequest request)
+        {
+            ReleaseDetailDTO created = await _mediator.Send(new CreateReleaseCommand(bandId, request.Title, request.Type, request.Songs, request.Cover));
+            return Created($"/api/bands/releases/{created.Id}", created);
+        }
+
+        [Authorize]
+        [HttpGet("{bandId}/releases")]
+        [ProducesResponseType(typeof(List<ReleaseListItemDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<List<ReleaseListItemDTO>>> GetBandReleases(
+            [FromRoute] int bandId,
+            [FromQuery] int pageNumber = 1,
+            [FromQuery] int pageSize = 20)
+        {
+            if (pageSize > 50) pageSize = 50;
+            if (pageSize < 1) pageSize = 20;
+            if (pageNumber < 1) pageNumber = 1;
+
+            List<ReleaseListItemDTO> releases = await _mediator.Send(new GetBandReleasesQuery(bandId, pageNumber, pageSize));
+            return Ok(releases);
+        }
+
+        [Authorize]
+        [HttpGet("releases/{releaseId}")]
+        [ProducesResponseType(typeof(ReleaseDetailDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<ReleaseDetailDTO>> GetReleaseById([FromRoute] int releaseId)
+        {
+            ReleaseDetailDTO release = await _mediator.Send(new GetReleaseByIdQuery(releaseId));
+            return Ok(release);
         }
     }
 }
