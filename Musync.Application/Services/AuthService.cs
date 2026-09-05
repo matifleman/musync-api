@@ -43,6 +43,7 @@ namespace Musync.Application.Services
                 .Include(u => u.Followers)
                 .Include(u => u.Followed)
                 .Include(u => u.FavoriteInstruments)
+                .Include(u => u.FavoriteGenres)
                 .FirstOrDefaultAsync(u => u.Email.ToLower() == request.Email.ToLower());
             if (user is null) throw new BadRequestException("Invalid email or password");
 
@@ -70,6 +71,7 @@ namespace Musync.Application.Services
                 .Include(u => u.Followers)
                 .Include(u => u.Followed)
                 .Include(u => u.FavoriteInstruments)
+                .Include(u => u.FavoriteGenres)
                 .FirstOrDefaultAsync(u => u.Id == request.UserId);
             if (user is null) throw new NotFoundException($"User with id '{request.UserId}' not found");
 
