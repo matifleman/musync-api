@@ -19,8 +19,8 @@ mono_crash.*
 # Build results
 [Dd]ebug/
 [Dd]ebugPublic/
-[Rr]elease/
-[Rr]eleases/
+/[Rr]elease/
+/[Rr]eleases/
 x64/
 x86/
 [Ww][Ii][Nn]32/
@@ -277,6 +277,7 @@ Musync.Api/wwwroot/images/*
 Musync.Api/wwwroot/profile-pictures/*
 !Musync.Api/wwwroot/profile-pictures/default.jpg
 Musync.Api/wwwroot/band-pictures/*
+Musync.Api/wwwroot/release-covers/*
 
 # Business Intelligence projects
 *.rdl.data
