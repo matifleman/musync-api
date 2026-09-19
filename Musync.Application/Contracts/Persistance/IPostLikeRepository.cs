@@ -6,7 +6,6 @@ namespace Musync.Application.Contracts.Persistance
     {
         Task<PostLike?> GetLikeOfUser(int userId, int postId);
         Task<bool> HasUserLikedPost(int userId, int postId);
-        Task<IReadOnlyList<PostLike>> GetLikesByUserIdAsync(int userId);
         Task<HashSet<int>> GetLikedPostIdsAsync(int userId, IEnumerable<int> postIds);
     }
 }

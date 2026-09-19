@@ -6,7 +6,7 @@ using Musync.Application.Features.Like.Commands.DeletePostLike;
 using Musync.Application.Features.Like.Commands.LikePost;
 using Musync.Application.Features.Post;
 using Musync.Application.Features.Post.Commands;
-using Musync.Application.Features.Post.Queries.GetAllPosts;
+using Musync.Application.Features.Post.Queries.GetFeed;
 using Musync.Application.Features.Post.Queries.GetUserPosts;
 
 namespace Musync.Api.Controllers
@@ -45,12 +45,18 @@ namespace Musync.Api.Controllers
         }
 
         [Authorize]
-        [HttpGet]
+        [HttpGet("feed")]
         [ProducesResponseType(typeof(List<PostDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<List<PostDTO>>> GetAllPosts()
+        public async Task<ActionResult<List<PostDTO>>> GetFeed(
+            [FromQuery] int pageNumber = 1,
+            [FromQuery] int pageSize = 20)
         {
-            List<PostDTO> posts = await _mediator.Send(new GetAllPostsQuery());
+            if (pageSize > 50) pageSize = 50;
+            if (pageSize < 1) pageSize = 20;
+            if (pageNumber < 1) pageNumber = 1;
+
+            List<PostDTO> posts = await _mediator.Send(new GetFeedQuery(pageNumber, pageSize));
             return Ok(posts);
         }
 

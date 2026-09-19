@@ -21,13 +21,6 @@ namespace Musync.Persistance.Repositories
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<IReadOnlyList<PostLike>> GetLikesByUserIdAsync(int userId)
-        {
-            return await _dbContext.PostLikes
-                .Where(pl => pl.UserId == userId)
-                .ToListAsync();
-        }
-
         public async Task<HashSet<int>> GetLikedPostIdsAsync(int userId, IEnumerable<int> postIds)
         {
             List<int> likedPostIds = await _dbContext.PostLikes
