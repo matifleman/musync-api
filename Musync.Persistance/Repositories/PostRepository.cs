@@ -23,6 +23,19 @@ namespace Musync.Persistance.Repositories
             return userPosts;
         }
 
+        public Task<List<Post>> GetFeedAsync(int userId, int pageNumber, int pageSize)
+        {
+            // Own posts plus posts by users the caller follows. Ordered by Id because
+            // SQLite can't translate ORDER BY on DateTimeOffset; Id follows insertion order.
+            return _dbContext.Posts
+                .Where(post => post.AuthorId == userId || post.Author!.Followers!.Any(follower => follower.Id == userId))
+                .Include(post => post.Author)
+                .OrderByDescending(post => post.Id)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+        }
+
         public override async Task<IReadOnlyList<Post>> GetAllAsync()
         {
             List<Post> posts = await _dbContext.Posts

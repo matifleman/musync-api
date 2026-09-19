@@ -28,6 +28,16 @@ namespace Musync.Persistance.Repositories
                 .ToListAsync();
         }
 
+        public async Task<HashSet<int>> GetLikedPostIdsAsync(int userId, IEnumerable<int> postIds)
+        {
+            List<int> likedPostIds = await _dbContext.PostLikes
+                .Where(pl => pl.UserId == userId && postIds.Contains(pl.PostId))
+                .Select(pl => pl.PostId)
+                .ToListAsync();
+
+            return likedPostIds.ToHashSet();
+        }
+
         public Task<bool> HasUserLikedPost(int userId, int postId)
         {
             return _dbContext.PostLikes
