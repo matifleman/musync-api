@@ -6,5 +6,6 @@ namespace Musync.Application.Contracts.Persistance
     {
         Task<List<Post>> GetPostsByAuthorIdAsync(int authorId);
         Task<List<Post>> GetFeedAsync(int userId, int pageNumber, int pageSize);
+        Task<Post?> GetPostWithAuthorAsync(int postId);
     }
 }
