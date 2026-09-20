@@ -88,7 +88,7 @@ Dependencies: **6 → 5** (onboarding uses the suggestions), **8 → 3, 7** (com
 
 **Scope: Back**
 - `Comment` entity (`PostId`, `AuthorId`, `Text`, `CreatedAt`) plus a migration, deleted with its post (cascade).
-- `GET /api/posts/{id}/comments?pageNumber&pageSize` (oldest first), `POST /api/posts/{id}/comments`, `DELETE /api/comments/{id}` (comment author or post author).
+- `GET /api/posts/{id}/comments?pageNumber&pageSize` (newest first, see Decisions), `POST /api/posts/{id}/comments`, `DELETE /api/comments/{id}` (comment author or post author).
 - Validator: text required and trimmed, max length (e.g. 500).
 - Add `CommentsCount` to `PostDTO`.
 
@@ -103,9 +103,12 @@ Dependencies: **6 → 5** (onboarding uses the suggestions), **8 → 3, 7** (com
 - [ ] A comment's author and the post's author can delete it; nobody else can.
 - [ ] No imports from `data/dummyComments.ts` remain.
 
-**Open questions**
-- Flat comments or one level of replies? (Recommendation: flat for v1.)
-- Likes on comments? (Recommendation: no for v1.)
+**Decisions** (settled when the feature was picked up)
+- **Flat comments, no replies.** A `ParentCommentId` makes paging ambiguous (replies would need their own cursor) for no v1 value. Stays additive later.
+- **No likes on comments.** A `CommentLike` mirroring `PostLike` can be added later without changing the comment contract.
+- **Pages are newest-first, rendered in an `inverted` FlatList.** The modal opens on the newest comment and scrolling up loads older pages. Oldest-first was the original sketch, but it made the modal open on ancient comments and put a just-posted comment on an unfetched page.
+- **Deleting is long-press → confirm.** No trash icon and no swipe gesture, which would need a gesture library nothing else in the app uses.
+- **`CommentDTO.Author` reuses `UserDTO`**, consistent with `PostDTO.Author`, rather than adding a fourth user-card shape (see `musync-api/docs/refactor-plan.md` Group 6).
 
 ---
 
