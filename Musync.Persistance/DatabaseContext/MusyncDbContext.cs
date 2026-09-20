@@ -23,6 +23,7 @@ namespace Musync.Persistance.DatabaseContext
         public DbSet<Genre> Genres { get; set; }
         public DbSet<Instrument> Instruments { get; set; }
         public DbSet<PostLike> PostLikes { get; set; }
+        public DbSet<Comment> Comments { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
         public DbSet<BandMember> BandMembers { get; set; }
         public DbSet<BandFollower> BandFollowers { get; set; }
