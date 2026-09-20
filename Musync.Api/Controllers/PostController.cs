@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Musync.Api.Models;
 using Musync.Application.Common;
 using Musync.Application.Features.Comment;
+using Musync.Application.Features.Comment.Commands.CreateComment;
 using Musync.Application.Features.Comment.Queries.GetPostComments;
 using Musync.Application.Features.Like.Commands.DeletePostLike;
 using Musync.Application.Features.Like.Commands.LikePost;
@@ -138,6 +139,18 @@ namespace Musync.Api.Controllers
 
             List<CommentDTO> comments = await _mediator.Send(new GetPostCommentsQuery(postId, pageNumber, pageSize));
             return Ok(comments);
+        }
+
+        [Authorize]
+        [HttpPost("{postId}/comments")]
+        [ProducesResponseType(typeof(CommentDTO), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<CommentDTO>> CreateComment([FromRoute] int postId, [FromBody] CreateCommentRequest request)
+        {
+            CommentDTO createdComment = await _mediator.Send(new CreateCommentCommand(postId, request.Text));
+            return Created($"/api/comments/{createdComment.Id}", createdComment);
         }
     }
 }
