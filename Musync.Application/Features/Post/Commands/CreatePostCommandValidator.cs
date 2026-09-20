@@ -7,6 +7,10 @@ namespace Musync.Application.Features.Post.Commands
     {
         public CreatePostCommandValidator()
         {
+            RuleFor(p => p.Caption)
+                .MaximumLength(Domain.Post.CaptionMaxLength)
+                .WithMessage($"Caption must be {Domain.Post.CaptionMaxLength} characters or fewer.");
+
             RuleFor(p => p.Image)
                 .Cascade(CascadeMode.Stop)
                 .NotEmpty()
