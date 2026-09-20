@@ -1,12 +1,16 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Musync.Api.Models;
 using Musync.Application.Common;
 using Musync.Application.Features.Like.Commands.DeletePostLike;
 using Musync.Application.Features.Like.Commands.LikePost;
 using Musync.Application.Features.Post;
 using Musync.Application.Features.Post.Commands;
+using Musync.Application.Features.Post.Commands.DeletePost;
+using Musync.Application.Features.Post.Commands.UpdatePostCaption;
 using Musync.Application.Features.Post.Queries.GetFeed;
+using Musync.Application.Features.Post.Queries.GetPost;
 using Musync.Application.Features.Post.Queries.GetUserPosts;
 
 namespace Musync.Api.Controllers
@@ -58,6 +62,42 @@ namespace Musync.Api.Controllers
 
             List<PostDTO> posts = await _mediator.Send(new GetFeedQuery(pageNumber, pageSize));
             return Ok(posts);
+        }
+
+        [Authorize]
+        [HttpGet("{postId}")]
+        [ProducesResponseType(typeof(PostDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<PostDTO>> GetPost([FromRoute] int postId)
+        {
+            PostDTO post = await _mediator.Send(new GetPostQuery(postId));
+            return Ok(post);
+        }
+
+        [Authorize]
+        [HttpPatch("{postId}")]
+        [ProducesResponseType(typeof(PostDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<PostDTO>> UpdatePostCaption([FromRoute] int postId, [FromBody] UpdatePostCaptionRequest request)
+        {
+            PostDTO post = await _mediator.Send(new UpdatePostCaptionCommand(postId, request.Caption));
+            return Ok(post);
+        }
+
+        [Authorize]
+        [HttpDelete("{postId}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult> DeletePost([FromRoute] int postId)
+        {
+            await _mediator.Send(new DeletePostCommand(postId));
+            return NoContent();
         }
 
         [Authorize]

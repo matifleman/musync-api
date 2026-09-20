@@ -23,6 +23,17 @@ namespace Musync.Persistance.Repositories
             return userPosts;
         }
 
+        // Read-only: the inherited GetByIdAsync doesn't Include the author, but PostDTO.Author
+        // is required. AsNoTracking also guarantees a fresh instance rather than whatever the
+        // identity map already holds, which matters when a handler re-reads a post it just wrote.
+        public Task<Post?> GetPostWithAuthorAsync(int postId)
+        {
+            return _dbContext.Posts
+                .AsNoTracking()
+                .Include(post => post.Author)
+                .FirstOrDefaultAsync(post => post.Id == postId);
+        }
+
         public Task<List<Post>> GetFeedAsync(int userId, int pageNumber, int pageSize)
         {
             // Own posts plus posts by users the caller follows. Ordered by Id because

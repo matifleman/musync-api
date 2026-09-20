@@ -10,6 +10,9 @@ namespace Musync.Persistance.Configurations
         {
             builder.HasKey(p => p.Id);
 
+            builder.Property(p => p.Caption)
+                .HasMaxLength(Post.CaptionMaxLength);
+
             builder.HasOne(p => p.Author)
                 .WithMany()
                 .HasForeignKey(p => p.AuthorId)

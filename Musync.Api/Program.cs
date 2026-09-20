@@ -72,6 +72,7 @@ builder.Services.AddRateLimiter(options =>
 // Exception handlers
 builder.Services.AddScoped<IExceptionHandler, BadRequestExceptionHandler>();
 builder.Services.AddScoped<IExceptionHandler, NotFoundExceptionHandler>();
+builder.Services.AddScoped<IExceptionHandler, ForbiddenExceptionHandler>();
 builder.Services.AddScoped<IExceptionHandler, UnauthorizedAccessExceptionHandler>();
 builder.Services.AddScoped<IExceptionHandler, DefaultExceptionHandler>();
 
