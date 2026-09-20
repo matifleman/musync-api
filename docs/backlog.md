@@ -98,10 +98,15 @@ Dependencies: **6 → 5** (onboarding uses the suggestions), **8 → 3, 7** (com
 - Remove `data/dummyComments.ts` and any other dummy data that ends up unused.
 
 **Acceptance criteria**
-- [ ] Comments persist and show for every user who opens the post.
+- [x] Comments persist and show for every user who opens the post.
 - [ ] Adding a comment updates the list and the count without a manual refresh.
-- [ ] A comment's author and the post's author can delete it; nobody else can.
-- [ ] No imports from `data/dummyComments.ts` remain.
+- [x] A comment's author and the post's author can delete it; nobody else can.
+- [x] No imports from `data/dummyComments.ts` remain.
+
+The three checked boxes were verified against the running API (three accounts,
+including the 403 for an unrelated caller and the cascade when the post is
+deleted). The remaining box is pure client-side cache behaviour and still needs
+one pass on a device/emulator, together with the long-press delete affordance.
 
 **Decisions** (settled when the feature was picked up)
 - **Flat comments, no replies.** A `ParentCommentId` makes paging ambiguous (replies would need their own cursor) for no v1 value. Stays additive later.
