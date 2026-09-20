@@ -11,17 +11,20 @@ namespace Musync.Application.Features.Post.Queries.GetPost
         private readonly ICurrentUserService _currentUserService;
         private readonly IPostRepository _postRepository;
         private readonly IPostLikeRepository _postLikeRepository;
+        private readonly ICommentRepository _commentRepository;
         private readonly IMapper _mapper;
 
         public GetPostQueryHandler(
             ICurrentUserService currentUserService,
             IPostRepository postRepository,
             IPostLikeRepository postLikeRepository,
+            ICommentRepository commentRepository,
             IMapper mapper)
         {
             _currentUserService = currentUserService;
             _postRepository = postRepository;
             _postLikeRepository = postLikeRepository;
+            _commentRepository = commentRepository;
             _mapper = mapper;
         }
 
@@ -36,6 +39,7 @@ namespace Musync.Application.Features.Post.Queries.GetPost
 
             PostDTO postDTO = _mapper.Map<PostDTO>(post);
             postDTO.Liked = await _postLikeRepository.HasUserLikedPost(currentUserId, post.Id);
+            postDTO.CommentsCount = await _commentRepository.GetCommentsCountAsync(post.Id);
 
             return postDTO;
         }

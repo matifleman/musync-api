@@ -12,17 +12,20 @@ namespace Musync.Application.Features.Post.Commands.UpdatePostCaption
         private readonly ICurrentUserService _currentUserService;
         private readonly IPostRepository _postRepository;
         private readonly IPostLikeRepository _postLikeRepository;
+        private readonly ICommentRepository _commentRepository;
         private readonly IMapper _mapper;
 
         public UpdatePostCaptionCommandHandler(
             ICurrentUserService currentUserService,
             IPostRepository postRepository,
             IPostLikeRepository postLikeRepository,
+            ICommentRepository commentRepository,
             IMapper mapper)
         {
             _currentUserService = currentUserService;
             _postRepository = postRepository;
             _postLikeRepository = postLikeRepository;
+            _commentRepository = commentRepository;
             _mapper = mapper;
         }
 
@@ -55,6 +58,7 @@ namespace Musync.Application.Features.Post.Commands.UpdatePostCaption
 
             PostDTO postDTO = _mapper.Map<PostDTO>(updatedPost);
             postDTO.Liked = await _postLikeRepository.HasUserLikedPost(currentUserId, updatedPost.Id);
+            postDTO.CommentsCount = await _commentRepository.GetCommentsCountAsync(updatedPost.Id);
 
             return postDTO;
         }

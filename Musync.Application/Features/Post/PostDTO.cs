@@ -10,6 +10,7 @@ namespace Musync.Application.Features.Post
         public string Caption { get; set; } = string.Empty;
         public required string Image { get; set; }
         public bool Liked { get; set; } = false;
+        public int CommentsCount { get; set; } = 0;
         public DateTimeOffset CreatedAt { get; set; }
     }
 }
