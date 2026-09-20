@@ -8,7 +8,10 @@ namespace Musync.Persistance.Configurations
     {
         public void Configure(EntityTypeBuilder<PostLike> builder)
         {
-            builder.HasIndex(pl => new { pl.UserId, pl.PostId });
+            // Unique so a double-tap race can't create two likes for the same user+post;
+            // LikePostCommandHandler's check-then-insert is not atomic on its own.
+            builder.HasIndex(pl => new { pl.UserId, pl.PostId })
+                .IsUnique();
 
             builder.HasOne(pl => pl.Post)
                 .WithMany(p => p.Likes)
