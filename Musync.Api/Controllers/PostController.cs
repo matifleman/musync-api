@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Musync.Api.Models;
 using Musync.Application.Common;
+using Musync.Application.Features.Comment;
+using Musync.Application.Features.Comment.Commands.CreateComment;
+using Musync.Application.Features.Comment.Queries.GetPostComments;
 using Musync.Application.Features.Like.Commands.DeletePostLike;
 using Musync.Application.Features.Like.Commands.LikePost;
 using Musync.Application.Features.Post;
@@ -120,5 +123,34 @@ namespace Musync.Api.Controllers
             return NoContent();
         }
 
+        [Authorize]
+        [HttpGet("{postId}/comments")]
+        [ProducesResponseType(typeof(List<CommentDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<List<CommentDTO>>> GetPostComments(
+            [FromRoute] int postId,
+            [FromQuery] int pageNumber = 1,
+            [FromQuery] int pageSize = 20)
+        {
+            if (pageSize > 50) pageSize = 50;
+            if (pageSize < 1) pageSize = 20;
+            if (pageNumber < 1) pageNumber = 1;
+
+            List<CommentDTO> comments = await _mediator.Send(new GetPostCommentsQuery(postId, pageNumber, pageSize));
+            return Ok(comments);
+        }
+
+        [Authorize]
+        [HttpPost("{postId}/comments")]
+        [ProducesResponseType(typeof(CommentDTO), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<CommentDTO>> CreateComment([FromRoute] int postId, [FromBody] CreateCommentRequest request)
+        {
+            CommentDTO createdComment = await _mediator.Send(new CreateCommentCommand(postId, request.Text));
+            return Created($"/api/comments/{createdComment.Id}", createdComment);
+        }
     }
 }
