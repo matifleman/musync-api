@@ -64,5 +64,25 @@ namespace Musync.Persistance.Repositories
                 .Where(b => b.CreatedById == userId || b.Members.Any(m => m.UserId == userId))
                 .ToListAsync();
         }
+
+        public Task<List<Band>> GetSuggestedAsync(int userId, IReadOnlyCollection<int> genreIds, int pageNumber, int pageSize)
+        {
+            // "Your bands" means the same thing as in GetBandsByUserIdAsync: created or joined.
+            // Both halves matter - creating a band does not add the creator to BandMembers.
+            // Ranked like the user suggestions: shared genres, then popularity, then id. Band
+            // has no followers navigation, so popularity is a correlated BandFollowers count.
+            return _dbContext.Bands
+                .AsNoTracking()
+                .Include(b => b.Members)
+                .Where(b => b.CreatedById != userId
+                    && !b.Members.Any(m => m.UserId == userId)
+                    && !_dbContext.BandFollowers.Any(f => f.BandId == b.Id && f.UserId == userId))
+                .OrderByDescending(b => b.Genres.Count(g => genreIds.Contains(g.Id)))
+                .ThenByDescending(b => _dbContext.BandFollowers.Count(f => f.BandId == b.Id))
+                .ThenBy(b => b.Id)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+        }
     }
 }
