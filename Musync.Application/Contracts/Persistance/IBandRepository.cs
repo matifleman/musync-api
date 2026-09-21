@@ -7,5 +7,6 @@ namespace Musync.Application.Contracts.Persistance
         Task<List<Band>> SearchAsync(string? searchTerm, int? instrumentId, int? genreId, int pageNumber, int pageSize);
         Task<Band?> GetBandWithDetailsAsync(int bandId);
         Task<List<Band>> GetBandsByUserIdAsync(int userId);
+        Task<List<Band>> GetSuggestedAsync(int userId, IReadOnlyCollection<int> genreIds, int pageNumber, int pageSize);
     }
 }

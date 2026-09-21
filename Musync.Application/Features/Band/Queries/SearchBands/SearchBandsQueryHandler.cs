@@ -26,7 +26,7 @@ namespace Musync.Application.Features.Band.Queries.SearchBands
                 request.SearchTerm, request.InstrumentId, request.GenreId, request.PageNumber, request.PageSize);
 
             return bands
-                .Select(b => new BandSearchDTO { Id = b.Id, Name = b.Name, MemberCount = b.Members.Count })
+                .Select(b => new BandSearchDTO { Id = b.Id, Name = b.Name, MemberCount = b.Members.Count, ProfilePicture = b.ProfilePicture })
                 .ToList();
         }
     }
