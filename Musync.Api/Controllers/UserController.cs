@@ -14,6 +14,7 @@ using Musync.Application.Features.User.Queries.GetUserFollowing;
 using Musync.Application.Features.User.Queries.GetUsers;
 using Musync.Application.Features.User.Queries.SearchUsers;
 using Musync.Domain;
+using Musync.Application.Features.User.Commands.CompleteOnboarding;
 
 namespace Musync.API.Controllers
 {
@@ -150,6 +151,16 @@ namespace Musync.API.Controllers
         public async Task<ActionResult<CurrentUserDTO>> UpdateGenres([FromBody] UpdateGenresCommand command)
         {
             CurrentUserDTO updatedUser = await _mediator.Send(command);
+            return Ok(updatedUser);
+        }
+
+        [Authorize]
+        [HttpPut("me/onboarding")]
+        [ProducesResponseType(typeof(CurrentUserDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<CurrentUserDTO>> CompleteOnboarding()
+        {
+            CurrentUserDTO updatedUser = await _mediator.Send(new CompleteOnboardingCommand());
             return Ok(updatedUser);
         }
 
