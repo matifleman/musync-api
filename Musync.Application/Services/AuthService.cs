@@ -134,6 +134,9 @@ namespace Musync.Application.Services
                 BornDate = request.BornDate,
                 Email = request.Email,
                 ProfilePicture = "profile-pictures/default.jpg",
+                // Explicit rather than relying on the default: a new account always starts the
+                // onboarding flow, while accounts that predate it were backfilled as done.
+                OnboardingCompleted = false,
             };
         }
     }

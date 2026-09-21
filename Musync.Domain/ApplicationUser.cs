@@ -15,6 +15,10 @@ namespace Musync.Domain
         public ICollection<Genre>? FavoriteGenres { get; set; } = [];
         public ICollection<ApplicationUser>? Followers { get; set; } = [];
         public ICollection<ApplicationUser>? Followed { get; set; } = [];
+        // Deliberately no default in the model: the column defaults to false, which is also
+        // the CLR default. A model default of true would make EF treat an explicit false as
+        // "unset" and let the database write true for a brand-new user.
+        public bool OnboardingCompleted { get; set; }
 
         public bool IsFollowing(int otherUserId)
         {
