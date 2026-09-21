@@ -44,7 +44,7 @@ namespace Musync.Application.Features.User.Commands.UpdateAvatar
             user.ProfilePicture = avatarPath;
             await _userManager.UpdateAsync(user);
 
-            return _mapper.Map<CurrentUserDTO>(user);
+            return _mapper.Map<CurrentUserDTO>(await _userManager.LoadSelfProfileAsync(user.Id, cancellationToken));
         }
 
         private async Task<string> SaveImage(IFormFile image, CancellationToken cancellationToken)
