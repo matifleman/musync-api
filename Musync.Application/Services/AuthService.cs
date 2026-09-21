@@ -9,6 +9,7 @@ using Musync.Application.Exceptions;
 using Musync.Application.Models.Identity;
 using Musync.Domain;
 using System.IdentityModel.Tokens.Jwt;
+using Musync.Application.Features.User;
 
 namespace Musync.Application.Services
 {
@@ -40,10 +41,7 @@ namespace Musync.Application.Services
         public async Task<AuthResponse> Login(LoginRequest request)
         {
             ApplicationUser? user = await _userManager.Users
-                .Include(u => u.Followers)
-                .Include(u => u.Followed)
-                .Include(u => u.FavoriteInstruments)
-                .Include(u => u.FavoriteGenres)
+                .WithSelfProfile()
                 .FirstOrDefaultAsync(u => u.Email.ToLower() == request.Email.ToLower());
             if (user is null) throw new BadRequestException("Invalid email or password");
 
@@ -68,10 +66,7 @@ namespace Musync.Application.Services
         public async Task<AuthResponse> Refresh(RefreshRequest request)
         {
             ApplicationUser? user = await _userManager.Users
-                .Include(u => u.Followers)
-                .Include(u => u.Followed)
-                .Include(u => u.FavoriteInstruments)
-                .Include(u => u.FavoriteGenres)
+                .WithSelfProfile()
                 .FirstOrDefaultAsync(u => u.Id == request.UserId);
             if (user is null) throw new NotFoundException($"User with id '{request.UserId}' not found");
 

@@ -51,7 +51,7 @@ namespace Musync.Application.Features.User.Commands.UpdateInstruments
 
             await _userManager.UpdateAsync(user);
 
-            return _mapper.Map<CurrentUserDTO>(user);
+            return _mapper.Map<CurrentUserDTO>(await _userManager.LoadSelfProfileAsync(user.Id, cancellationToken));
         }
     }
 }
